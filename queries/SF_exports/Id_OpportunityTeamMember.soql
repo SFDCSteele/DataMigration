@@ -1,0 +1,3 @@
+select Id, OpportunityId, PACE_OpportunityID__c, PACE_OpportunityRevenueId__c, UserId, CorpEmplId__c, Primary__c, TeamMemberRole
+from OpportunityTeamMember
+where PACE_OpportunityID__c <> null

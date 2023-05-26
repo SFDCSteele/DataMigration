@@ -1,0 +1,6 @@
+select 
+    Id, OpportunityId,
+     PACE_OpportunityID__c, PACE_OpportunityRevenueID__c, 
+     ContactId, ContactIntegrationId__c, 
+     IsPrimary
+from OpportunityContactRole
