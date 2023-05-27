@@ -1,6 +1,26 @@
 --  Contact_L_01.sql Contact target object view load query to Contact_L
 USE Salesforce
 
+
+
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'05_01_03'
+	,'Contact E (extract)'
+	,'Extract'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
   DROP TABLE sfdc.Contact_L_01_A
 
 DECLARE 
@@ -132,3 +152,19 @@ ON TRIM(A.ContactIntegrationId__c) = TRIM(F.[ContactIntegrationId__c])
 
 where F.Id is NULL
 order by E.AccountId
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Contact_E)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '05_01_03';

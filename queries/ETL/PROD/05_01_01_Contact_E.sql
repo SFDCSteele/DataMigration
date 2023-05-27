@@ -10,7 +10,7 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'05_01_03'
+	'05_01_01'
 	,'Contact E (extract)'
 	,'Extract'
 	,GETDATE()
@@ -91,7 +91,7 @@ DECLARE
     @RecordCount AS INT = NULL
 
 
---  SET PER ENVIRONMENT
+--  SET PER Record Count
 SET @RecordCount = 
 	(SELECT count(*)
     FROM sfdc.Contact_E)
@@ -105,4 +105,4 @@ UPDATE sfdc.Migration_Status
     endDateTime = GETDATE()
     ,recordCount=@RecordCount
     ,status='COMPLETED' 
-WHERE stepsID = '05_01_03';
+WHERE stepsID = '05_01_01';

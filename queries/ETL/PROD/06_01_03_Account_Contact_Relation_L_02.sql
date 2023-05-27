@@ -2,6 +2,24 @@
 USE Salesforce
 
 
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'06_01_03_2'
+	,'Account Contact Relation L (Load)'
+	,'Load for Update'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
 DECLARE 
     @ABTSupportId AS VARCHAR(18) = NULL,
     @AccountAccountRecordTypeId AS VARCHAR(20) = NULL
@@ -58,3 +76,19 @@ Where C.Id Is NOT NULL AND D.Id Is NOT NULL
 --order by C.Id, D.Id
 order by D.Id, C.Id
 
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Contact_E)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '06_01_03_2';
