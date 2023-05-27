@@ -22,10 +22,8 @@ DROP Table sfdc.[Id_Contact_fullData]
 select * 
     INTO sfdc.[Id_Contact_fullData]
 from sfdc.[Id_Contact_fullData_230518-0928]
-
-sfdc.[Id_AccountContactRelation_fullData_230518-1139]
-
 DROP Table sfdc.[Id_AccountContactRelation_fullData]
+
 
 select * 
     INTO sfdc.[Id_AccountContactRelation_fullData]
