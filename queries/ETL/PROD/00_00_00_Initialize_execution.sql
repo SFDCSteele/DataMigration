@@ -12,7 +12,7 @@ DECLARE
 --	Obtain User.Id value for User.Alias = 'ABTSuppt'
 SET @ABTSupportId = 
 	(SELECT Id 
-    FROM sfdc.[Id_User_fullData_230516-1405]
+    FROM sfdc.[Id_User_fullData]
     WHERE Alias = 'ABTSuppt')
 
 --  SET PER ENVIRONMENT

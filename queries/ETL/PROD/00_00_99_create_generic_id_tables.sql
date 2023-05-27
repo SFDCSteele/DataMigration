@@ -32,5 +32,16 @@ select *
 from sfdc.[Id_AccountContactRelation_fullData_230518-1139]
 
 
-Create Table 
+CREATE TABLE sfdc.Migration_Status (
+    stepsID varchar(50) ,
+    description varchar(255),
+    action varchar(255),
+    startDateTime datetime,
+    endDateTime dateTime,
+    recordCount int,
+    status varchar(255) 
+);
+
+create index Migration_Status_Index
+    on sfdc.[Migration_Status](stepsID);
 

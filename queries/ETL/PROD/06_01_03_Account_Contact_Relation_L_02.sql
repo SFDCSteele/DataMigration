@@ -52,8 +52,9 @@ ON D.Id = E.CONTACTID AND C.Id = E.ACCOUNTID
 Where C.Id Is NOT NULL AND D.Id Is NOT NULL 
 		--AND C.Id LIKE '07k77000008tvFl%' OR D.Id LIKE '07k77000008tvFl%' OR E.Id LIKE '07k77000008tyqg' --'07k77000008tvWw'
 		--AND E.ID is not null AND A.Primary__c = 'true'  --comment this is for updating the primary (record Id is NOT null)
-		AND E.ID is null AND A.Primary__c = 'false'  --comment this is for inserting the secondary (record Id is null)
-WHERE IsDirect__c = 'true' AND RelationshipDirection__c = 'CONTACT_TO_ACCOUNT' --alternative to 'ACCOUNT_TO_CONTACT'
+		AND E.ID is NOT null --AND A.Primary__c = 'false'  --comment this is for inserting the secondary (record Id is null)
+        --AND IsDirect__c = 'true' AND RelationshipDirection__c = 'CONTACT_TO_ACCOUNT' --alternative to 'ACCOUNT_TO_CONTACT'
+        AND RelationshipDirection__c = 'CONTACT_TO_ACCOUNT' --alternative to 'ACCOUNT_TO_CONTACT'
 --order by C.Id, D.Id
 order by D.Id, C.Id
 

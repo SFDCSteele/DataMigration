@@ -1,5 +1,25 @@
 --	Contact_E.sql Contact target object view extraction query to table Contact_E
 USE Salesforce;
+
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'05_01_03'
+	,'Contact E (extract)'
+	,'Extract'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
+
 DROP TABLE sfdc.Contact_E
 SELECT --top 1000--TOP 0.1 PERCENT
 	ContactIntegrationId AS 'ContactIntegrationId__c' 
@@ -66,3 +86,22 @@ SELECT --top 1000--TOP 0.1 PERCENT
 --FROM osc.CONTACT_SEED -- base load tables
 FROM oscd.CONTACT_SEED -- delta load tables
 --where Address1 IS NULL
+
+DECLARE 
+    @RecordCount AS INT = NULL
+
+
+--  SET PER ENVIRONMENT
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Contact_E)
+
+UPDATE sfdc.Migration_Status ( SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+) WHERE stepsID = '05_01_03';

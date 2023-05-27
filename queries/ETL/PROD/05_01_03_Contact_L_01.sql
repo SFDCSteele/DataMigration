@@ -2,18 +2,26 @@
 USE Salesforce
 
   DROP TABLE sfdc.Contact_L_01_A
-  DROP TABLE sfdc.Contact_L_01
 
 DECLARE 
-    @ABTSupportId AS VARCHAR(18) = NULL
+    @ABTSupportId AS VARCHAR(18) = NULL,
+    @AccountAccountRecordTypeId AS VARCHAR(20) = NULL
 
 --	Obtain User.Id value for User.Alias = 'ABTSuppt'
 SET @ABTSupportId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_User_fullData_230516-1405]
+    FROM sfdc.[Id_User_fullData]
     WHERE Alias = 'ABTSuppt')
 
+--  SET PER ENVIRONMENT
+SET @AccountAccountRecordTypeId = 
+	(SELECT Id 
+--  SET CORRECT TABLE NAME BELOW !!
+    FROM sfdc.[Id_RecordType_fullData]
+    WHERE DeveloperName = 'Account' AND IsActive = 'true')
+
+--get account Id to be assigned to applicable contacts
 SELECT   --TOP 0.1 PERCENT 
 	--count(*)
 	 A.ContactIntegrationId__c 
@@ -24,16 +32,18 @@ FROM sfdc.Contact_T AS A
 LEFT JOIN sfdc.Account_Contact_Relation_T AS B-- for Account__c
 ON TRIM(A.ContactIntegrationId__c) = TRIM(B.ContactIntegrationId__c) 
 
-LEFT JOIN sfdc.[Id_Account_fullData_230516-1655] AS E-- for Account__c
-ON TRIM(B.AIMSAccount__c) = TRIM(E.[AIMSAccount__c]) AND E.RecordTypeId = '012770000004LOvAAM'
+LEFT JOIN sfdc.[Id_Account_fullData] AS E-- for Account__c
+ON TRIM(B.AIMSAccount__c) = TRIM(E.[AIMSAccount__c]) AND E.RecordTypeId = @AccountAccountRecordTypeId
 
 where B.Primary__c = 'true'
---order by E.Id
 group by A.ContactIntegrationId__c, E.Id
+
+  DROP TABLE sfdc.Contact_L_01
 
 SELECT  -- TOP 0.1 PERCENT 
 	A.ContactIntegrationId__c 
 	, A.ContactAddrIntegrationId__c
+	, F.Id
 	--, A.AccountId
 	, E.AccountId 
 	--, E.RecordTypeId
@@ -105,16 +115,20 @@ SELECT  -- TOP 0.1 PERCENT
   INTO sfdc.Contact_L_01
 FROM sfdc.Contact_T AS A
 
-LEFT JOIN sfdc.[Id_User_fullData_230516-1405] AS B -- for OwnerId
+LEFT JOIN sfdc.[Id_User_fullData] AS B -- for OwnerId
 ON A.OwnerCorpEmplId__c = B.CorpEmplId__c AND B.CorpEmplId__c IS NOT NULL
 
-LEFT JOIN sfdc.[Id_User_fullData_230516-1405] AS C -- for CreatedById
+LEFT JOIN sfdc.[Id_User_fullData] AS C -- for CreatedById
 ON TRIM(A.CreatedById) = TRIM(C.Alias) and C.CorpEmplID__c IS NOT NULL
 
-LEFT JOIN sfdc.[Id_User_fullData_230516-1405] AS D -- for LastModifiedById
+LEFT JOIN sfdc.[Id_User_fullData] AS D -- for LastModifiedById
 ON TRIM(A.LastModifiedById) = TRIM(D.Alias) and D.CorpEmplID__c IS NOT NULL
 
 LEFT JOIN sfdc.[Contact_L_01_A] AS E-- for Account__c
-ON TRIM(A.ContactIntegrationId__c) = TRIM(E.[ContactIntegrationId__c]) --AND E.RecordTypeId = '012770000004LOvAAM'
+ON TRIM(A.ContactIntegrationId__c) = TRIM(E.[ContactIntegrationId__c]) 
 
+LEFT JOIN sfdc.[Id_Contact_fullData] AS F-- for Contact record Id values
+ON TRIM(A.ContactIntegrationId__c) = TRIM(F.[ContactIntegrationId__c]) 
+
+where F.Id is NULL
 order by E.AccountId
