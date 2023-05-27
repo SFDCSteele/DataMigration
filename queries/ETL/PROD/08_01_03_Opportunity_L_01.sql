@@ -3,6 +3,24 @@
 
 USE Salesforce
 
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'08_01_03_1'
+	,'Opportunity L (Load)'
+	,'Load for Insert'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
 DECLARE 
     @ABTSupportId AS VARCHAR(18) = NULL,
     @AcctRecordTypeId AS VARCHAR(18) = NULL,
@@ -15,16 +33,36 @@ DECLARE
 SET @ABTSupportId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_User_fullData_230516-1405]
+    FROM sfdc.[Id_User_fullData]
     WHERE Alias = 'ABTSuppt')
 
 --  MANUAL VALUE ENTRIES PER ENVIRONMENT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 --  org-specific RecordTypeId values:    
-SET @AcctRecordTypeId = '012770000004LOvAAM' -- fullData Account RT Account  
-SET @OptyCrossSellRecordTypeId = '012770000004LOxAAM' -- fullData 012770000004LOxAAM
-SET @OptyExpandRecordTypeId = '012770000004LOyAAM' -- fullData 012770000004LOyAAM
-SET @OptyNewRecordTypeId = '012770000004LOzAAM' -- fullData 012770000004LOzAAM
-SET @OptyRetainRecordTypeId = '012770000004LP0AAM' -- fullData 012770000004LP0AAM
+SET @AcctRecordTypeId = 
+	(SELECT Id 
+--  SET CORRECT TABLE NAME BELOW !!
+    FROM sfdc.[Id_RecordType_fullData]
+    WHERE DeveloperName = 'Account' AND IsActive = 'true')
+SET @OptyCrossSellRecordTypeId = 
+	(SELECT Id 
+--  SET CORRECT TABLE NAME BELOW !!
+    FROM sfdc.[Id_RecordType_fullData]
+    WHERE DeveloperName = 'Cross Sell' AND IsActive = 'true')
+SET @OptyExpandRecordTypeId = 
+	(SELECT Id 
+--  SET CORRECT TABLE NAME BELOW !!
+    FROM sfdc.[Id_RecordType_fullData]
+    WHERE DeveloperName = 'Expand' AND IsActive = 'true')
+SET @OptyNewRecordTypeId = 
+	(SELECT Id 
+--  SET CORRECT TABLE NAME BELOW !!
+    FROM sfdc.[Id_RecordType_fullData]
+    WHERE DeveloperName = 'New' AND IsActive = 'true')
+SET @OptyRetainRecordTypeId = 
+	(SELECT Id 
+--  SET CORRECT TABLE NAME BELOW !!
+    FROM sfdc.[Id_RecordType_fullData]
+    WHERE DeveloperName = 'Retain' AND IsActive = 'true')
 --  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 SELECT --TOP 10000
@@ -103,24 +141,46 @@ SELECT --TOP 10000
 --  DROP TABLE sfdc.Opportunity_L_01
 FROM sfdc.Opportunity_T AS A
 
-LEFT JOIN sfdc.[Id_Account_fullData_230517-0925] AS B
+LEFT JOIN sfdc.[Id_Account_fullData] AS B
 ON A.AIMSAccount__c = B.AIMSAccount__c AND B.RecordTypeId = @AcctRecordTypeId
 
-LEFT JOIN sfdc.[Id_User_fullData_230516-1405] AS C -- for OwnerId, 
+LEFT JOIN sfdc.[Id_User_fullData] AS C -- for OwnerId, 
 ON A.OwnerCorpEmplId__c = C.CorpEmplID__c AND C.CorpEmplID__c IS NOT NULL
 
-LEFT JOIN sfdc.[Id_User_fullData_230516-1405] AS D -- for CreatedById
+LEFT JOIN sfdc.[Id_User_fullData] AS D -- for CreatedById
 ON A.CreatedById = D.Alias AND D.CorpEmplID__c IS NOT NULL
 
-LEFT JOIN sfdc.[Id_User_fullData_230516-1405] AS E -- for LastModifiedById
+LEFT JOIN sfdc.[Id_User_fullData] AS E -- for LastModifiedById
 ON A.LastModifiedById = E.Alias AND E.CorpEmplID__c IS NOT NULL
 
 /*
 -- for L_03:
-LEFT JOIN sfdc.[Id_Opportunity_fullData_230428-1733] AS F -- for Opportunity.Id in Opportunity_L_03
+LEFT JOIN sfdc.[Id_Opportunity_fullData] AS F -- for Opportunity.Id in Opportunity_L_03
 ON A.PACE_OpportunityID__c = F.PACE_OpportunityID__c 
     AND A.PACE_OpportunityRevenueId__c = F.PACE_OpportunityRevenueId__c 
     AND F.PACE_OpportunityRevenueId__c IS NOT NULL
 */
 --  WHERE 
 ORDER BY AccountId, PACE_OpportunityID__c, PACE_OpportunityRevenueId__c --AccountId is B.Id
+
+
+
+
+DECLARE 
+    @RecordCount AS INT = NULL
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Opportunity_L_01)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '08_01_03_1';

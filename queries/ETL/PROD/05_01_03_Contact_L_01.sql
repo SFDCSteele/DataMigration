@@ -12,9 +12,9 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'05_01_03'
-	,'Contact E (extract)'
-	,'Extract'
+	'05_01_03_1'
+	,'Contact L (Load)'
+	,'Load for Insert'
 	,GETDATE()
 	--,''
 	,0
@@ -153,10 +153,14 @@ ON TRIM(A.ContactIntegrationId__c) = TRIM(F.[ContactIntegrationId__c])
 where F.Id is NULL
 order by E.AccountId
 
+
+DECLARE 
+    @RecordCount AS INT = NULL
+
 --  SET PER Record Count
 SET @RecordCount = 
 	(SELECT count(*)
-    FROM sfdc.Contact_E)
+    FROM sfdc.Contact_L_01)
 
 UPDATE sfdc.Migration_Status 
 	SET 
@@ -167,4 +171,4 @@ UPDATE sfdc.Migration_Status
     endDateTime = GETDATE()
     ,recordCount=@RecordCount
     ,status='COMPLETED' 
-WHERE stepsID = '05_01_03';
+WHERE stepsID = '05_01_03_1';

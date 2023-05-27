@@ -1,6 +1,24 @@
 -- Contact_T.sql Contact target object view transformation query to table Contact_T
 USE Salesforce
 
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'05_01_02'
+	,'Contact E (Transform)'
+	,'Transform'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
   DROP TABLE sfdc.Contact_T
 SELECT  -- TOP 0.1 PERCENT 
 	ContactIntegrationId__c 
@@ -70,3 +88,24 @@ SELECT  -- TOP 0.1 PERCENT
 	
   INTO sfdc.Contact_T
 FROM sfdc.Contact_E
+
+
+DECLARE 
+    @RecordCount AS INT = NULL
+
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Contact_T)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '05_01_02';

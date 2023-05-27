@@ -3,6 +3,25 @@
 
 USE Salesforce
 
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'08_01_01'
+	,'Opportunity E (Extract)'
+	,'Extract'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
+
 SELECT TOP .1 PERCENT
     [Name] AS "Name"
 --    ,Id -- lookup from Opportunity in Opportunity_L_02
@@ -61,3 +80,24 @@ SELECT TOP .1 PERCENT
 --  DROP TABLE sfdc.Opportunity_E
 FROM osc.OPPORTUNITY_SEED
 ORDER BY AIMS_ACCT, OptyId, RevnId
+
+
+DECLARE 
+    @RecordCount AS INT = NULL
+
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Opportunity_E)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '08_01_01';

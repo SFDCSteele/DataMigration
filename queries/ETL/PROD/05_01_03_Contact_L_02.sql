@@ -152,6 +152,9 @@ ON TRIM(A.ContactIntegrationId__c) = TRIM(F.[ContactIntegrationId__c])
 where F.Id is NOT NULL
 order by E.AccountId
 
+DECLARE 
+    @RecordCount AS INT = NULL
+
 
 --  SET PER Record Count
 SET @RecordCount = 

@@ -76,10 +76,13 @@ WHERE IsDirect__c = 'true' AND RelationshipDirection__c = 'CONTACT_TO_ACCOUNT' -
 order by D.Id, C.Id
 
 
+DECLARE 
+    @RecordCount AS INT = NULL
+
 --  SET PER Record Count
 SET @RecordCount = 
 	(SELECT count(*)
-    FROM sfdc.Contact_E)
+    FROM sfdc.Account_Contact_Relation_L_01)
 
 UPDATE sfdc.Migration_Status 
 	SET 

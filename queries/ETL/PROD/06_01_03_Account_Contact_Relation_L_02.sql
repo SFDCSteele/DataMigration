@@ -1,4 +1,4 @@
---  Account_Contact_Relation_L_01.sql Account Contact Relationship target object view load query to table Account_Contact_Relation_L
+--  Account_Contact_Relation_L_02.sql Account Contact Relationship target object view load query to table Account_Contact_Relation_L
 USE Salesforce
 
 
@@ -38,7 +38,7 @@ SET @AccountAccountRecordTypeId =
     FROM sfdc.[Id_RecordType_fullData]
     WHERE DeveloperName = 'Account' AND IsActive = 'true')
 
-	DROP TABLE sfdc.Account_Contact_Relation_L_01
+	DROP TABLE sfdc.Account_Contact_Relation_L_02
 
 SELECT --TOP,  0.3 PERCENT
 	E.ID
@@ -54,7 +54,7 @@ SELECT --TOP,  0.3 PERCENT
     , A.Roles 
     , A.Role__c 
 
-  INTO sfdc.Account_Contact_Relation_L_01
+  INTO sfdc.Account_Contact_Relation_L_02
 FROM sfdc.Account_Contact_Relation_T AS A
 
 LEFT JOIN sfdc.[Id_Account_fullData] AS C-- for Account__c
@@ -77,10 +77,13 @@ Where C.Id Is NOT NULL AND D.Id Is NOT NULL
 order by D.Id, C.Id
 
 
+DECLARE 
+    @RecordCount AS INT = NULL
+
 --  SET PER Record Count
 SET @RecordCount = 
 	(SELECT count(*)
-    FROM sfdc.Contact_E)
+    FROM sfdc.Account_Contact_Relation_L_02)
 
 UPDATE sfdc.Migration_Status 
 	SET 

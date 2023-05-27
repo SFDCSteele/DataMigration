@@ -11,7 +11,7 @@ Insert INTO sfdc.Migration_Status (
     ,status 
 ) values (
 	'05_01_01'
-	,'Contact E (extract)'
+	,'Contact E (Extract)'
 	,'Extract'
 	,GETDATE()
 	--,''
