@@ -96,7 +96,8 @@ SET @RecordCount =
 	(SELECT count(*)
     FROM sfdc.Contact_E)
 
-UPDATE sfdc.Migration_Status ( SET 
+UPDATE sfdc.Migration_Status 
+	SET 
     --stepsID
     --,description
     --,action
@@ -104,4 +105,4 @@ UPDATE sfdc.Migration_Status ( SET
     endDateTime = GETDATE()
     ,recordCount=@RecordCount
     ,status='COMPLETED' 
-) WHERE stepsID = '05_01_03';
+WHERE stepsID = '05_01_03';
