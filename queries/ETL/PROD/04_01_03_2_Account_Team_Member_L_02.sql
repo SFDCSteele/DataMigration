@@ -40,6 +40,25 @@ create index District_Territory_Index
     on sfdc.[Id_User_Reference_fullData](District_Territory_key);
 
 -- Account RT Location Primary owner
+
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'04_01_03_2'
+	,'Account_Team_Member L (Load)'
+	,'Load Account Location Primary'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
 DROP TABLE sfdc.Account_Team_Member_Location_Primary_L_02_1
 SELECT --TOP 0.3 PERCENT
 	CASE
@@ -71,7 +90,45 @@ where  C.Id is not null
 
 order by C.Id
 
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Account_Team_Member_Primary_L_01_1)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '04_01_03_2';
+
+
 -- Account RT Location Secondary owner
+
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'04_01_03_4'
+	,'Account_Team_Member L (Load)'
+	,'Load Account Location Secondary'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
+
 --DROP TABLE sfdc.Account_Team_Member_Location_Secondary_L_02_2
 SELECT --TOP 0.3 PERCENT
 	CASE
@@ -103,3 +160,19 @@ ON A.AIMS_LOC = C.[AIMSAccountLocation__c] AND C.RecordTypeId=@AcctRecordTypeId
 --where  C.Id is not null
 
 order by C.Id
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Account_Team_Member_Location_Secondary_L_02_2)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '04_01_03_4';
