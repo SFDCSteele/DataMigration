@@ -68,9 +68,9 @@ SELECT --TOP 0.3 PERCENT
 		END
 		AS 'UserId'
 		,B.Title
-    ,PrimaryAccountOwner__c
-    ,territory as 'TerritoryNumber__c'
-    ,SecondaryTerritoryNumber__c
+    ,A.PrimaryAccountOwner__c
+    ,A.territory as 'TerritoryNumber__c'
+    ,A.SecondaryTerritoryNumber__c
     ,C.Id AS Account__c -- set via AIMSAccount__c
     ,'Primary Owner' AS 'TeamMemberRole'
     ,'Edit' AS 'ACCOUNTACCESSLEVEL'
@@ -134,9 +134,9 @@ SELECT --TOP 0.3 PERCENT
 		END
 		AS 'UserId'
 		,B.Title
-    ,PrimaryAccountOwner__c
-    ,territory as 'TerritoryNumber__c'
-    ,SecondaryTerritoryNumber__c
+    ,A.PrimaryAccountOwner__c
+    ,A.territory as 'TerritoryNumber__c'
+    ,A.SecondaryTerritoryNumber__c
     ,C.Id AS Account__c -- set via AIMSAccount__c
     ,'Secondary Owner' AS 'TeamMemberRole'
     ,'Edit' AS 'ACCOUNTACCESSLEVEL'

@@ -1,6 +1,7 @@
 --  Account_Team_Member_LocationL_02.sql Account Team Member target object view load query to tableAccount_Team_Member_LocationL
 USE Salesforce
 
+DECLARE 
     @ABTSupportId AS VARCHAR(18) = NULL,
     @AcctRecordTypeId AS VARCHAR(18) = NULL,
     @RecordCount AS INT = NULL
@@ -47,9 +48,9 @@ SELECT --TOP 0.3 PERCENT
 		END
 		AS 'UserId'
 		,B.Title
-    ,PrimaryAccountOwner__c
-    ,territory as 'TerritoryNumber__c'
-    ,SecondaryTerritoryNumber__c
+    ,A.PrimaryAccountOwner__c
+    ,A.territory as 'TerritoryNumber__c'
+    ,A.SecondaryTerritoryNumber__c
     ,C.Id AS Account__c -- set via AIMSAccount__c
     ,C.[AIMSAccountLocation__c]
     ,'Primary Owner' AS 'TeamMemberRole'
@@ -71,7 +72,7 @@ where  C.Id is not null
 order by C.Id
 
 -- Account RT Location Secondary owner
-DROP TABLE sfdc.Account_Team_Member_Location_Secondary_L_02_2
+--DROP TABLE sfdc.Account_Team_Member_Location_Secondary_L_02_2
 SELECT --TOP 0.3 PERCENT
 	CASE
 		WHEN B.Id IS NULL OR B.Id = 'ABTSupport' THEN @ABTSupportId
@@ -79,9 +80,10 @@ SELECT --TOP 0.3 PERCENT
 		END
 		AS 'UserId'
 		,B.Title
-    ,PrimaryAccountOwner__c
-    ,territory as 'TerritoryNumber__c'
-    ,SecondaryTerritoryNumber__c
+	,	C.Id
+    ,A.PrimaryAccountOwner__c
+    ,A.territory as 'TerritoryNumber__c'
+    ,A.SecondaryTerritoryNumber__c
     ,C.Id AS Account__c -- set via AIMSAccount__c
     ,C.[AIMSAccountLocation__c]
     ,'Secondary Owner' AS 'TeamMemberRole'
@@ -90,7 +92,7 @@ SELECT --TOP 0.3 PERCENT
     ,'Edit' AS 'OPPORTUNITYACCESSLEVEL'
 
 
-  INTO sfdc.Account_Team_Member_Location_Secondary_L_02_2
+  --INTO sfdc.Account_Team_Member_Location_Secondary_L_02_2
 FROM sfdc.Account_Team_Member_Location_Secondary_T AS A
 LEFT JOIN sfdc.[Id_User_Reference_fullData] AS B -- for OwnerId
 ON A.territory = B.District_Territory_key
@@ -98,6 +100,6 @@ ON A.territory = B.District_Territory_key
 LEFT JOIN sfdc.[Id_Account_fullData] AS C-- for OwnerId, Account__c
 ON A.AIMS_LOC = C.[AIMSAccountLocation__c] AND C.RecordTypeId=@AcctRecordTypeId
 
-where  C.Id is not null
+--where  C.Id is not null
 
 order by C.Id
