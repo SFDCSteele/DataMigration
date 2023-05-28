@@ -19,12 +19,14 @@ Insert INTO sfdc.Migration_Status (
 	,0
 	,'STARTED'
 );
+
+  DROP TABLE sfdc.Opportunity_L_02
+
 SELECT --top 1000 
     Id
     ,'Closed Lost' AS StageName
 
---  INTO sfdc.Opportunity_L_02
---  DROP TABLE sfdc.Opportunity_L_02
+  INTO sfdc.Opportunity_L_02
 FROM sfdc.[Id_Opportunity_fullData]
 WHERE StatusCode__c = 'Lost' AND Id IS NOT NULL
     AND (StageName = 'Needs Analysis'

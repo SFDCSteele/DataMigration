@@ -65,7 +65,9 @@ SET @OptyRetainRecordTypeId =
     WHERE DeveloperName = 'Retain' AND IsActive = 'true')
 --  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-SELECT TOP 10000
+  DROP TABLE sfdc.Opportunity_L_03
+
+SELECT --TOP 10000
     A.[Name]
     ,F.Id -- lookup in Opportunity_L_03
 --    ,ContactId-- lookup from OpportunityTeamMember in Opportunity_L_02
@@ -136,8 +138,7 @@ SELECT TOP 10000
     ,AccountShipmentDate__c
     ,ProposalId__c
 
---  INTO sfdc.Opportunity_L_03
---  DROP TABLE sfdc.Opportunity_L_03
+  INTO sfdc.Opportunity_L_03
 FROM sfdc.Opportunity_T AS A
 
 LEFT JOIN sfdc.[Id_Account_fullData] AS B
@@ -155,12 +156,16 @@ ON A.LastModifiedById = E.Alias AND E.CorpEmplID__c IS NOT NULL
 LEFT JOIN sfdc.[Id_Opportunity_fullData] AS F -- for Opportunity.Id in Opportunity_L_03
 ON A.PACE_OpportunityID__c = F.PACE_OpportunityID__c 
     AND A.PACE_OpportunityRevenueId__c = F.PACE_OpportunityRevenueId__c
+
+
+WHERE F.Id is NOT null
+/*
 WHERE -- Filter to exclude duplicate Opportunity_Seed PK values in 230414 refresh dataset - DELETE FOR SUBSEQUENT !!!
     CONCAT(A.PACE_OpportunityID__c, A.PACE_OpportunityRevenueId__c) <> '300001278345897300001278345901'
     AND CONCAT(A.PACE_OpportunityID__c, A.PACE_OpportunityRevenueId__c) <> '300000759186132300000772749477'
     AND CONCAT(A.PACE_OpportunityID__c, A.PACE_OpportunityRevenueId__c) <> '300000759186132300000759186161'
     AND CONCAT(A.PACE_OpportunityID__c, A.PACE_OpportunityRevenueId__c) <> '300001278345897300001339558208'
-
+*/
 ORDER BY AccountId, PACE_OpportunityID__c, PACE_OpportunityRevenueId__c --AccountId is B.Id
 
 

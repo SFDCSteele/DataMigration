@@ -113,7 +113,7 @@ SELECT  -- TOP 0.1 PERCENT
 	, A.MailingLongitude 
 	, A.AddressType__c 
 	, A.Affinity__c 
-	, A.PantherBuyingRole__c 
+	, A.BuyingRole__c 
 	, A.OmegaStatus__c 
 	, A.PantherInfluenceLevel__c 
 	, A.PreferredName__c 

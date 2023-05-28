@@ -1,4 +1,4 @@
---  Contact_L_01.sql Contact target object view load query to Contact_L
+--  Contact_L_02.sql Contact target object view load query to Contact_L
 USE Salesforce
 
 
@@ -20,7 +20,7 @@ Insert INTO sfdc.Migration_Status (
 	,'STARTED'
 );
 
-  DROP TABLE sfdc.Contact_L_01_A
+  DROP TABLE sfdc.Contact_L_02_A
 
 DECLARE 
     @ABTSupportId AS VARCHAR(18) = NULL,
@@ -46,7 +46,7 @@ SELECT   --TOP 0.1 PERCENT
 	 A.ContactIntegrationId__c 
 	, E.Id AS 'AccountId' 
 	
-  INTO sfdc.Contact_L_01_A
+  INTO sfdc.Contact_L_02_A
 FROM sfdc.Contact_T AS A
 LEFT JOIN sfdc.Account_Contact_Relation_T AS B-- for Account__c
 ON TRIM(A.ContactIntegrationId__c) = TRIM(B.ContactIntegrationId__c) 
@@ -57,7 +57,7 @@ ON TRIM(B.AIMSAccount__c) = TRIM(E.[AIMSAccount__c]) AND E.RecordTypeId = @Accou
 where B.Primary__c = 'true'
 group by A.ContactIntegrationId__c, E.Id
 
-  DROP TABLE sfdc.Contact_L_01
+  DROP TABLE sfdc.Contact_L_02
 
 SELECT  -- TOP 0.1 PERCENT 
 	A.ContactIntegrationId__c 
@@ -112,9 +112,9 @@ SELECT  -- TOP 0.1 PERCENT
 	, A.MailingLongitude 
 	, A.AddressType__c 
 	, A.Affinity__c 
-	, A.PantherBuyingRole__c 
+	, A.BuyingRole__c 
 	, A.OmegaStatus__c 
-	, A.PantherInfluenceLevel__c 
+	, A.InfluenceLevel__c 
 	, A.PreferredName__c 
 	, A.OwnerCorpEmplId 
 	, A.Source__c 
@@ -131,7 +131,7 @@ SELECT  -- TOP 0.1 PERCENT
 	, A.OmegaInviteDate__c 
 	, A.OmegaAcceptedDate__c 
 	
-  INTO sfdc.Contact_L_01
+  INTO sfdc.Contact_L_02
 FROM sfdc.Contact_T AS A
 
 LEFT JOIN sfdc.[Id_User_fullData] AS B -- for OwnerId
@@ -143,7 +143,7 @@ ON TRIM(A.CreatedById) = TRIM(C.Alias) and C.CorpEmplID__c IS NOT NULL
 LEFT JOIN sfdc.[Id_User_fullData] AS D -- for LastModifiedById
 ON TRIM(A.LastModifiedById) = TRIM(D.Alias) and D.CorpEmplID__c IS NOT NULL
 
-LEFT JOIN sfdc.[Contact_L_01_A] AS E-- for Account__c
+LEFT JOIN sfdc.[Contact_L_02_A] AS E-- for Account__c
 ON TRIM(A.ContactIntegrationId__c) = TRIM(E.[ContactIntegrationId__c]) 
 
 LEFT JOIN sfdc.[Id_Contact_fullData] AS F-- for Contact record Id values

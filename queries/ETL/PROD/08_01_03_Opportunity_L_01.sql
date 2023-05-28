@@ -65,14 +65,16 @@ SET @OptyRetainRecordTypeId =
     WHERE DeveloperName = 'Retain' AND IsActive = 'true')
 --  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+  DROP TABLE sfdc.Opportunity_L_01
+
 SELECT --TOP 10000
-    [Name]
---    ,F.Id -- lookup in Opportunity_L_03
+    A.[Name]
+    ,F.Id -- lookup in Opportunity_L_03
 --    ,ContactId-- lookup from OpportunityTeamMember in Opportunity_L_02 ### DEPRECATED?????
-    ,PACE_OpportunityID__c
-    ,PACE_OpportunityRevenueId__c
+    ,A.PACE_OpportunityID__c
+    ,A.PACE_OpportunityRevenueId__c
 --	,A.PACE_OpportunityRevenueId__c -- for deployment in MOCK-03
-    ,[Type] -- Picklist
+    ,A.[Type] -- Picklist
     ,CASE
         WHEN [Type] = 'Cross Sell' THEN @OptyCrossSellRecordTypeId
         WHEN [Type] = 'Expand' THEN @OptyExpandRecordTypeId
@@ -94,51 +96,50 @@ SELECT --TOP 10000
 		ELSE D.Id
 		END
 		AS 'CreatedById' -- lookup in Opportunity_L_01
-    ,CreatedDate
+    ,A.CreatedDate
  	,CASE
         WHEN A.LastModifiedById IS NULL OR A.LastModifiedDate IS NULL THEN NULL
 		WHEN E.Alias IS NULL OR A.LastModifiedById = 'ABTSupport' THEN @ABTSupportId
 		ELSE E.Id
 		END
 		AS 'LastModifiedById' -- lookup in Opportunity_L_01
-    ,LastModifiedDate
-    ,CloseDate 
+    ,A.LastModifiedDate
+    ,A.CloseDate 
 --    ,f(CloseDate) AS "Fiscal" -- associated fiscal qtr or period -- depends on Fiscal Year decision DM
-    ,StageName -- Picklist
-    ,StatusCode__c -- Picklist
-    ,ReasonWonLostCode__c -- Picklist -- see PK discussion via email on PL values
-    ,WinLossDescription__c
-    ,PrimaryCompetitor__c -- Picklist -- Source & Target values identical, no transform needed
-    ,Amount
-    ,Probability
-    ,BusinessType__c -- Picklist
-    ,LeadSource -- Picklist
-    ,RelatedToA3PL__c  -- Checkbox
+    ,A.StageName -- Picklist
+    ,A.StatusCode__c -- Picklist
+    ,A.ReasonWonLostCode__c -- Picklist -- see PK discussion via email on PL values
+    ,A.WinLossDescription__c
+    ,A.PrimaryCompetitor__c -- Picklist -- Source & Target values identical, no transform needed
+    ,A.Amount
+    ,A.Probability
+    ,A.BusinessType__c -- Picklist
+    ,A.LeadSource -- Picklist
+    ,A.RelatedToA3PL__c  -- Checkbox
  --   ,X3PL__c -- not in scope for this project phase
-    ,RelatedToRetail__c  -- Checkbox
-    ,Retailer__c  -- Picklist
-    ,CustomerServiceReqs__c -- MultiSelect
-    ,InternalType__c -- not a Picklist per PK 230301
-    ,RetailPlus__c  -- Checkbox
-    ,RetailPlusRetailers__c -- MultiSelect -- Source & Target values idential, no transform needed
-    ,DecisionMakerIdentifiedFlag__c -- Checkbox
-    ,LevelofRisk__c -- Picklist
-    ,Solution__c -- Picklist
-    ,InvoicingEmail__c
-    ,InvoicingPreferences__c -- Picklist
-    ,TechnicalRequirements__c -- Picklist
-    ,NextStep -- roughly formatted values, but not a picklist
-    ,LegalRequirements__c -- Picklist
-    ,RetainType__c -- Picklist
-    ,Geographies__c -- Picklist
-    ,Equipment__c -- Picklist
-    ,ArcBestNew__c -- Checbox
-    ,NewSolution__c -- Checkbox
-    ,AccountShipmentDate__c
-    ,ProposalId__c
+    ,A.RelatedToRetail__c  -- Checkbox
+    ,A.Retailer__c  -- Picklist
+    ,A.CustomerServiceReqs__c -- MultiSelect
+    ,A.InternalType__c -- not a Picklist per PK 230301
+    ,A.RetailPlus__c  -- Checkbox
+    ,A.RetailPlusRetailers__c -- MultiSelect -- Source & Target values idential, no transform needed
+    ,A.DecisionMakerIdentifiedFlag__c -- Checkbox
+    ,A.LevelofRisk__c -- Picklist
+    ,A.Solution__c -- Picklist
+    ,A.InvoicingEmail__c
+    ,A.InvoicingPreferences__c -- Picklist
+    ,A.TechnicalRequirements__c -- Picklist
+    ,A.NextStep -- roughly formatted values, but not a picklist
+    ,A.LegalRequirements__c -- Picklist
+    ,A.RetainType__c -- Picklist
+    ,A.Geographies__c -- Picklist
+    ,A.Equipment__c -- Picklist
+    ,A.ArcBestNew__c -- Checbox
+    ,A.NewSolution__c -- Checkbox
+    ,A.AccountShipmentDate__c
+    ,A.ProposalId__c
 
   INTO sfdc.Opportunity_L_01
---  DROP TABLE sfdc.Opportunity_L_01
 FROM sfdc.Opportunity_T AS A
 
 LEFT JOIN sfdc.[Id_Account_fullData] AS B
@@ -153,6 +154,12 @@ ON A.CreatedById = D.Alias AND D.CorpEmplID__c IS NOT NULL
 LEFT JOIN sfdc.[Id_User_fullData] AS E -- for LastModifiedById
 ON A.LastModifiedById = E.Alias AND E.CorpEmplID__c IS NOT NULL
 
+LEFT JOIN sfdc.[Id_Opportunity_fullData] AS F -- for Opportunity.Id in Opportunity_L_03
+ON A.PACE_OpportunityID__c = F.PACE_OpportunityID__c 
+    AND A.PACE_OpportunityRevenueId__c = F.PACE_OpportunityRevenueId__c
+
+
+WHERE F.Id is null
 /*
 -- for L_03:
 LEFT JOIN sfdc.[Id_Opportunity_fullData] AS F -- for Opportunity.Id in Opportunity_L_03

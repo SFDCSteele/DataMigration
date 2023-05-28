@@ -21,7 +21,9 @@ Insert INTO sfdc.Migration_Status (
 	,'STARTED'
 );
 
-SELECT TOP 1 PERCENT
+  DROP TABLE sfdc.Opportunity_T
+
+SELECT --TOP 1 PERCENT
     LEFT([Name], 120) AS "Name"
 --    ,Id -- lookup from Opportunity in Opportunity_L_02
 --    ,ContactId-- lookup from OpportunityTeamMember in Opportunity_L_02
@@ -438,8 +440,7 @@ SELECT TOP 1 PERCENT
     ,AccountShipmentDate__c
     ,ProposalId__c
 
---  INTO sfdc.Opportunity_T
---  DROP TABLE sfdc.Opportunity_T
+  INTO sfdc.Opportunity_T
 FROM sfdc.Opportunity_E
 ORDER BY AIMSAccount__c, PACE_OpportunityID__c, PACE_OpportunityRevenueId__c
 

@@ -66,9 +66,9 @@ SELECT  -- TOP 0.1 PERCENT
 	, MailingLongitude 
     ,REPLACE(AddressType__c,',',';') AS AddressType__c
 	, Affinity__c 
-	, PantherBuyingRole__c 
+	, BuyingRole__c 
 	, OmegaStatus__c 
-	, PantherInfluenceLevel__c 
+	, InfluenceLevel__c 
 	--, REPLACE(REPLACE(PreferredName__c,',',';'),'"','''' ) AS PreferredName__c 
 	, PreferredName__c AS PreferredName__c 
 	, OwnerCorpEmplId 
