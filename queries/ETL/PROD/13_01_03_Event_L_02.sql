@@ -1,4 +1,4 @@
---  Task_L_01.sql Task target object view load query to tableTask_L
+--  Event_L_02.sql Event target object view load query to table Event_L
 USE Salesforce
 
 Insert INTO sfdc.Migration_Status (
@@ -10,9 +10,9 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'12_01_03_1'
+	'13_01_03_2'
 	,'Task L (Load)'
-	,'Load for Insert'
+	,'Load for Update'
 	,GETDATE()
 	--,''
 	,0
@@ -37,17 +37,16 @@ SET @AccountAccountRecordTypeId =
     FROM sfdc.[Id_RecordType_fullData]
     WHERE DeveloperName = 'Account' AND IsActive = 'true')
 
-	--DROP TABLE sfdc.Task_L_01
+	--DROP TABLE sfdc.Event_L_02
 
 SELECT --TOP 0.3 PERCENT
-	A.PACE_ActivityId__c
+	A.PACE_ActivityId__c 
 	, X.Id
 	, A.AIMSAccount__c 
 	, A.[Description] 
 	, A.ActivityFunctionCode 
 	, A.[Status]
-	, A.IsClosed
-	, A.CompletedDateTime 
+	, A.EndDateTime 
 	, A.[Subject] 
 	, A.StartDateTime 
 	, A.[Type]
@@ -57,7 +56,7 @@ SELECT --TOP 0.3 PERCENT
 		END
 		AS 'CreatedById' 
 	, A.CreatedDate 
-	, A.ActivityDate 
+	--, A.ActivityDate 
 	, A.LastModifiedDate 
 	, CASE
 		WHEN C.Alias IS NULL THEN @ABTSupportId
@@ -75,12 +74,8 @@ SELECT --TOP 0.3 PERCENT
 		ELSE D2.Id
 		END
 		AS 'OwnerId' 
-	, D1.CorpEmplID__c
-	, D1.[PrimaryFlag] AS 'PrimaryFlag__c'
-	, A.PrimaryContactId__c 
-	, E2.Id AS 'WhoId' --- contact
+	, E2.Id AS "WhoId" --- contact
 	, A.Priority
-	, A.PACE_TemplateId__c 
 	, A.WebDemo__c
 	, A.DiscussionTopics__c 
 	, A.InternalType__c 
@@ -88,8 +83,8 @@ SELECT --TOP 0.3 PERCENT
 	, A.ChurnQuestion2__c 
 	, A.ChurnQuestion4__c
 
-  --INTO sfdc.Task_L_01
-FROM sfdc.Task_T AS A
+  --INTO sfdc.Event_L_02
+FROM sfdc.Event_T AS A
 
 LEFT JOIN sfdc.[Id_User_fullData] AS B -- for CreatedById
 ON TRIM(A.CreatedById) = TRIM(B.Alias) AND B.CorpEmplID__c IS NOT NULL
@@ -114,11 +109,13 @@ ON A.PACE_OpportunityID__c = F.PACE_OpportunityID__c
 LEFT JOIN sfdc.[Id_Account_fullData] AS G-- for Account__c
 ON TRIM(A.AIMSAccount__c) = TRIM(G.AIMSAccount__c) AND G.RecordTypeId = @RecordTypeId
 
-LEFT JOIN sfdc.[Id_Task_fullData] AS X-- for activity record Id values
+LEFT JOIN sfdc.[Id_Event_fullData] AS X-- for activity record Id values
 ON TRIM(A.A.PACE_ActivityId__c) = TRIM(X.[ActivityId]) 
 
-WHERE E1.ActivityId IS NOT NULL
-	X.Id is null
+
+WHERE 	X.Id is null
+
+--WHERE E1.ActivityId IS NOT NULL
 order by A.AIMSAccount__c,A.PACE_OpportunityID__c
 --order by A.PACE_ActivityId__c
 
@@ -128,7 +125,7 @@ DECLARE
 --  SET PER Record Count
 SET @RecordCount = 
 	(SELECT count(*)
-    FROM sfdc.Task_L_01)
+    FROM sfdc.Event_L_02)
 
 UPDATE sfdc.Migration_Status 
 	SET 
@@ -139,4 +136,4 @@ UPDATE sfdc.Migration_Status
     endDateTime = GETDATE()
     ,recordCount=@RecordCount
     ,status='COMPLETED' 
-WHERE stepsID = '12_01_03_1';
+WHERE stepsID = '13_01_03_2';

@@ -2,6 +2,24 @@
 --  LAST RUN:  230518 fulldata
 USE SALESFORCE
 
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'11_01_01'
+	,'Account Plan E (Extract)'
+	,'Extract'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
 SELECT
     BusinessPlanId AS "Id" -- lookup in AccountPlan__c_L_02.sql
     ,BusinessPlanId AS "PACE_BusinessPlanId__c"
@@ -30,5 +48,26 @@ SELECT
 --  INTO sfdc.AccountPlan__c_E
 --  DROP TABLE sfdc.AccountPlan__c_E
 
-FROM osc.BUSINESS_PLAN_SEED
+--FROM osc.BUSINESS_PLAN_SEED
+FROM oscd.BUSINESS_PLAN_SEED
 ORDER BY BusinessPlanId
+
+
+DECLARE 
+    @RecordCount AS INT = NULL
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.AccountPlan__c_E)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '11_01_01';

@@ -1,4 +1,4 @@
---  Task_L_01.sql Task target object view load query to tableTask_L
+--  Task_L_02.sql Task target object view load query to tableTask_L
 USE Salesforce
 
 Insert INTO sfdc.Migration_Status (
@@ -10,9 +10,9 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'12_01_03_1'
+	'12_01_03_2'
 	,'Task L (Load)'
-	,'Load for Insert'
+	,'Load for Update'
 	,GETDATE()
 	--,''
 	,0
@@ -37,7 +37,7 @@ SET @AccountAccountRecordTypeId =
     FROM sfdc.[Id_RecordType_fullData]
     WHERE DeveloperName = 'Account' AND IsActive = 'true')
 
-	--DROP TABLE sfdc.Task_L_01
+	--DROP TABLE sfdc.Task_L_02
 
 SELECT --TOP 0.3 PERCENT
 	A.PACE_ActivityId__c
@@ -88,7 +88,7 @@ SELECT --TOP 0.3 PERCENT
 	, A.ChurnQuestion2__c 
 	, A.ChurnQuestion4__c
 
-  --INTO sfdc.Task_L_01
+  --INTO sfdc.Task_L_02
 FROM sfdc.Task_T AS A
 
 LEFT JOIN sfdc.[Id_User_fullData] AS B -- for CreatedById
@@ -118,7 +118,7 @@ LEFT JOIN sfdc.[Id_Task_fullData] AS X-- for activity record Id values
 ON TRIM(A.A.PACE_ActivityId__c) = TRIM(X.[ActivityId]) 
 
 WHERE E1.ActivityId IS NOT NULL
-	X.Id is null
+	X.Id is NOT null
 order by A.AIMSAccount__c,A.PACE_OpportunityID__c
 --order by A.PACE_ActivityId__c
 
@@ -128,7 +128,7 @@ DECLARE
 --  SET PER Record Count
 SET @RecordCount = 
 	(SELECT count(*)
-    FROM sfdc.Task_L_01)
+    FROM sfdc.Task_L_02)
 
 UPDATE sfdc.Migration_Status 
 	SET 
@@ -139,4 +139,4 @@ UPDATE sfdc.Migration_Status
     endDateTime = GETDATE()
     ,recordCount=@RecordCount
     ,status='COMPLETED' 
-WHERE stepsID = '12_01_03_1';
+WHERE stepsID = '12_01_03_2';

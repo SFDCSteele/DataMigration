@@ -1,17 +1,26 @@
 --  Account_Team_Member_LocationL_02.sql Account Team Member target object view load query to tableAccount_Team_Member_LocationL
 USE Salesforce
 
-DECLARE 
-    @ABTSupportId AS VARCHAR(18) = NULL
+    @ABTSupportId AS VARCHAR(18) = NULL,
+    @AcctRecordTypeId AS VARCHAR(18) = NULL,
+    @RecordCount AS INT = NULL
 
 --	Obtain User.Id value for User.Alias = 'ABTSuppt'
 SET @ABTSupportId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_User_fullData_230516-1405]
+    FROM sfdc.[Id_User_fullData]
     WHERE Alias = 'ABTSuppt')
 
-DROP TABLE sfdc.[Id_User_Reference_fullData_230223-1245];
+--  MANUAL VALUE ENTRIES PER ENVIRONMENT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+--  org-specific RecordTypeId values:    
+SET @AcctRecordTypeId = 
+	(SELECT Id 
+--  SET CORRECT TABLE NAME BELOW !!
+    FROM sfdc.[Id_RecordType_fullData]
+    WHERE DeveloperName = 'Account' AND IsActive = 'true')
+
+DROP TABLE sfdc.[Id_User_Reference_fullData];
 
 SELECT
     Id
@@ -20,14 +29,14 @@ SELECT
     ,CONCAT (District__c,'-',Territory__c) as District_Territory_key
 	,Title
 	,IsActive
-INTO sfdc.[Id_User_Reference_fullData_230223-1245]
+INTO sfdc.[Id_User_Reference_fullData]
 
-FROM [sfdc].[Id_User_fullData_230516-1405]
+FROM [sfdc].[Id_User_fullData]
 where CorpEmplID__c IS NOT NULL AND IsActive = 'true' AND Alias <> 'Corp01'
 order by Id
 
 create index District_Territory_Index
-    on sfdc.[Id_User_Reference_fullData_230223-1245](District_Territory_key);
+    on sfdc.[Id_User_Reference_fullData](District_Territory_key);
 
 -- Account RT Location Primary owner
 DROP TABLE sfdc.Account_Team_Member_Location_Primary_L_02_1
@@ -51,11 +60,11 @@ SELECT --TOP 0.3 PERCENT
 
   INTO sfdc.Account_Team_Member_Location_Primary_L_02_1
 FROM sfdc.Account_Team_Member_Location_Primary_T AS A
-LEFT JOIN sfdc.[Id_User_Reference_fullData_230223-1245] AS B -- for OwnerId
+LEFT JOIN sfdc.[Id_User_Reference_fullData] AS B -- for OwnerId
 ON A.territory = B.District_Territory_key
 
-LEFT JOIN sfdc.[Id_Account_fullData_230518-1535] AS C-- for OwnerId, Account__c
-ON A.AIMS_LOC = C.[AIMSAccountLocation__c] AND C.RecordTypeId='012770000004LOwAAM'
+LEFT JOIN sfdc.[Id_Account_fullData] AS C-- for OwnerId, Account__c
+ON A.AIMS_LOC = C.[AIMSAccountLocation__c] AND C.RecordTypeId=@AcctRecordTypeId
 
 where  C.Id is not null
 
@@ -83,11 +92,11 @@ SELECT --TOP 0.3 PERCENT
 
   INTO sfdc.Account_Team_Member_Location_Secondary_L_02_2
 FROM sfdc.Account_Team_Member_Location_Secondary_T AS A
-LEFT JOIN sfdc.[Id_User_Reference_fullData_230223-1245] AS B -- for OwnerId
+LEFT JOIN sfdc.[Id_User_Reference_fullData] AS B -- for OwnerId
 ON A.territory = B.District_Territory_key
 
-LEFT JOIN sfdc.[Id_Account_fullData_230518-1535] AS C-- for OwnerId, Account__c
-ON A.AIMS_LOC = C.[AIMSAccountLocation__c] AND C.RecordTypeId='012770000004LOwAAM'
+LEFT JOIN sfdc.[Id_Account_fullData] AS C-- for OwnerId, Account__c
+ON A.AIMS_LOC = C.[AIMSAccountLocation__c] AND C.RecordTypeId=@AcctRecordTypeId
 
 where  C.Id is not null
 

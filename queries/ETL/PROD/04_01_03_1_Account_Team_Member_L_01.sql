@@ -2,16 +2,26 @@
 USE Salesforce
 
 DECLARE 
-    @ABTSupportId AS VARCHAR(18) = NULL
+    @ABTSupportId AS VARCHAR(18) = NULL,
+    @AcctRecordTypeId AS VARCHAR(18) = NULL,
+    @RecordCount AS INT = NULL
 
 --	Obtain User.Id value for User.Alias = 'ABTSuppt'
 SET @ABTSupportId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_User_fullData_230516-1405]
+    FROM sfdc.[Id_User_fullData]
     WHERE Alias = 'ABTSuppt')
 
-DROP TABLE sfdc.[Id_User_Reference_fullData_230223-1245];
+--  MANUAL VALUE ENTRIES PER ENVIRONMENT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+--  org-specific RecordTypeId values:    
+SET @AcctRecordTypeId = 
+	(SELECT Id 
+--  SET CORRECT TABLE NAME BELOW !!
+    FROM sfdc.[Id_RecordType_fullData]
+    WHERE DeveloperName = 'Account' AND IsActive = 'true')
+
+DROP TABLE sfdc.[Id_User_Reference_fullData];
 
 SELECT
     Id
@@ -20,16 +30,35 @@ SELECT
     ,CONCAT (District__c,'-',Territory__c) as District_Territory_key
 	,Title
 	,IsActive
-INTO sfdc.[Id_User_Reference_fullData_230223-1245]
+INTO sfdc.[Id_User_Reference_fullData]
 
-FROM [sfdc].[Id_User_fullData_230516-1405]
+FROM [sfdc].[Id_User_fullData]
 where CorpEmplID__c IS NOT NULL AND IsActive = 'true' AND Alias <> 'Corp01'
 order by Id
 
 create index District_Territory_Index
-    on sfdc.[Id_User_Reference_fullData_230223-1245](District_Territory_key);
+    on sfdc.[Id_User_Reference_fullData](District_Territory_key);
 
 -- Account RT Account Primary owner
+
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'04_01_03_1'
+	,'Account_Team_Member L (Load)'
+	,'Load Account Primary'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
 DROP TABLE sfdc.Account_Team_Member_Primary_L_01_1
 
 SELECT --TOP 0.3 PERCENT
@@ -51,15 +80,51 @@ SELECT --TOP 0.3 PERCENT
 
   INTO sfdc.Account_Team_Member_Primary_L_01_1
 FROM sfdc.Account_Team_Member_Primary_T AS A
-LEFT JOIN sfdc.[Id_User_Reference_fullData_230223-1245] AS B -- for OwnerId
+LEFT JOIN sfdc.[Id_User_Reference_fullData] AS B -- for OwnerId
 ON A.territory = B.District_Territory_key
 
-LEFT JOIN sfdc.[Id_Account_fullData_230518-1535] AS C-- for OwnerId, Account__c
-ON A.AIMSAccount__c = C.AIMSAccount__c AND C.RecordTypeId='012770000004LOvAAM'
+LEFT JOIN sfdc.[Id_Account_fullData] AS C-- for OwnerId, Account__c
+ON A.AIMSAccount__c = C.AIMSAccount__c AND C.RecordTypeId=@AcctRecordTypeId
 
 order by C.Id
 
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Account_Team_Member_Primary_L_01_1)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '04_01_03_1';
+
 -- Account RT Account Secondary owner
+
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'04_01_03_2'
+	,'Account_Team_Member L (Load)'
+	,'Load Account Secondary'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
 DROP TABLE sfdc.Account_Team_Member_Secondary_L_01_2
 
 SELECT --TOP 0.3 PERCENT
@@ -81,10 +146,26 @@ SELECT --TOP 0.3 PERCENT
 
   INTO sfdc.Account_Team_Member_Secondary_L_01_2
 FROM sfdc.Account_Team_Member_Secondary_T AS A
-LEFT JOIN sfdc.[Id_User_Reference_fullData_230223-1245] AS B -- for OwnerId
+LEFT JOIN sfdc.[Id_User_Reference_fullData] AS B -- for OwnerId
 ON A.territory = B.District_Territory_key
 
-LEFT JOIN sfdc.[Id_Account_fullData_230518-1535] AS C-- for OwnerId, Account__c
-ON A.AIMSAccount__c = C.AIMSAccount__c  AND C.RecordTypeId='012770000004LOvAAM'
+LEFT JOIN sfdc.[Id_Account_fullData] AS C-- for OwnerId, Account__c
+ON A.AIMSAccount__c = C.AIMSAccount__c  AND C.RecordTypeId=@AcctRecordTypeId
 
 order by C.Id
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Account_Team_Member_Secondary_L_01_2)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '04_01_03_2';

@@ -1,5 +1,25 @@
 -- Event_T.sql Event target object view transformation query to table Event_T
 USE Salesforce
+
+
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'13_01_02'
+	,'Event T (Transform)'
+	,'Transform'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
   --DROP TABLE sfdc.Event_T
 SELECT 
 	PACE_ActivityId__c 
@@ -61,3 +81,23 @@ SELECT
 	
   --INTO sfdc.Event_T
 FROM sfdc.Event_E;
+
+
+DECLARE 
+    @RecordCount AS INT = NULL
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Event_T)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '13_01_02';

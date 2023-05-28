@@ -1,5 +1,25 @@
 -- Task_T.sql Task target object view transformation query to table Account_Account_T
 USE Salesforce
+
+
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'12_01_02'
+	,'Task T (Transform)'
+	,'Transform'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
   DROP TABLE sfdc.Task_T
 SELECT  -- TOP 0.1 PERCENT 
 	PACE_ActivityId__c 
@@ -59,3 +79,23 @@ SELECT  -- TOP 0.1 PERCENT
 
   INTO sfdc.Task_T
 FROM sfdc.Task_E;
+
+
+DECLARE 
+    @RecordCount AS INT = NULL
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Task_T)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '12_01_02';

@@ -1,5 +1,25 @@
 --	Event_E.sql Account RT Account target object view extraction query to table Event_E
 USE Salesforce;
+
+
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'13_01_01'
+	,'Event E (Extract)'
+	,'Extract'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
  --DROP TABLE sfdc.Event_E
 SELECT --TOP 100 
     ActivityId AS 'PACE_ActivityId__c' 
@@ -35,5 +55,26 @@ SELECT --TOP 100
     , ChurnQuestion4_c AS 'ChurnQuestion4__c' 
 
  --INTO sfdc.Event_E
-FROM osc.ACTIVITY_SEED 
+--FROM osc.ACTIVITY_SEED 
+FROM oscd.ACTIVITY_SEED 
     Where ActivityFunctionCode = 'APPOINTMENT' AND StatusCode <> 'CANCELED'
+
+
+DECLARE 
+    @RecordCount AS INT = NULL
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Event_E)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '13_01_01';    

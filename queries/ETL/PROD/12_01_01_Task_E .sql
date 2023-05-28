@@ -1,5 +1,25 @@
 --	Task_E.sql Task target object view extraction query to table Task_E
 USE Salesforce;
+
+
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'12_01_01'
+	,'Task E (Extract)'
+	,'Extract'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
  --DROP TABLE sfdc.Task_E
 SELECT ---TOP 1000--TOP 0.1 PERCENT
     ActivityId AS 'PACE_ActivityId__c'
@@ -33,5 +53,26 @@ SELECT ---TOP 1000--TOP 0.1 PERCENT
     , ChurnQuestion4_c AS 'ChurnQuestion4__c'
 
  --INTO sfdc.Task_E
-FROM osc.ACTIVITY_SEED 
+--FROM osc.ACTIVITY_SEED 
+FROM oscd.ACTIVITY_SEED 
     Where ActivityFunctionCode = 'TASK' AND StatusCode <> 'CANCELED' AND InternalType_c != 'CUSTOMER_CHURN'
+
+
+DECLARE 
+    @RecordCount AS INT = NULL
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Task_E)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '12_01_01';    

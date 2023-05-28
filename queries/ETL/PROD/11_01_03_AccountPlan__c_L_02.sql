@@ -1,4 +1,4 @@
--- AccountPlan__c_L_01
+-- AccountPlan__c_L_02
 --  LAST RUN:   230518 fulldata
 
 USE SALESFORCE
@@ -12,9 +12,9 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'11_01_03_1'
+	'11_01_03_2'
 	,'Account Plan L (Load)'
-	,'Load for Insert'
+	,'Load for Update'
 	,GETDATE()
 	--,''
 	,0
@@ -35,6 +35,7 @@ SET @ABTSupportId =
 
 --  MANUAL VALUE ENTRIES PER ENVIRONMENT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 --  org-specific RecordTypeId values:    
+
 --  SET PER ENVIRONMENT
 SET @AccountAccountRecordTypeId = 
 	(SELECT Id 
@@ -45,30 +46,29 @@ SET @AccountAccountRecordTypeId =
 SELECT
 --    Id -- lookup in AccountPlan__c_L_02.sql
     PACE_BusinessPlanId__c
-    ,F.Id
     ,[Name]
     ,BusinessPlanTypeCode__c
     ,StatusCode__c
-    ,B.Id AS "Account__c"     -- lookup in AccountPlan__c_L_01.sql -- Config ???
+    ,B.Id AS "Account__c"     -- lookup in AccountPlan__c_L_02.sql -- Config ???
     ,A.AIMSAccount__c
     ,CASE
         WHEN C.Alias IS NULL OR A.OwnerCorpEmplId__c = 'ABTSupport' THEN @ABTSupportId
         ELSE C.Id
         END
-        AS 'OwnerId'    -- lookup in AccountPlan__c_L_01.sql
+        AS 'OwnerId'    -- lookup in AccountPlan__c_L_02.sql
     ,A.OwnerCorpEmplId__c
 	,CASE
 		WHEN D.Alias IS NULL OR A.CreatedById = 'ABTSupport' THEN @ABTSupportId
 		ELSE D.Id
 		END
-		AS 'CreatedById' -- lookup in AccountPlan__c_L_01.sql
+		AS 'CreatedById' -- lookup in AccountPlan__c_L_02.sql
     ,CreatedDate
  	,CASE
         WHEN A.LastModifiedById IS NULL OR A.LastModifiedDate IS NULL THEN NULL
 		WHEN E.Alias IS NULL OR A.LastModifiedById = 'ABTSupport' THEN @ABTSupportId
 		ELSE E.Id
 		END
-		AS 'LastModifiedById' -- lookup in AccountPlan__c_L_01.sql
+		AS 'LastModifiedById' -- lookup in AccountPlan__c_L_02.sql
     ,LastModifiedDate
     ,Description__c
     ,PlanYear__c
@@ -81,8 +81,8 @@ SELECT
     ,Value__c  
     ,ValuesFCL__c
 
---  INTO sfdc.AccountPlan__c_L_01
---  DROP TABLE sfdc.AccountPlan__c_L_01
+--  INTO sfdc.AccountPlan__c_L_02
+--  DROP TABLE sfdc.AccountPlan__c_L_02
 FROM sfdc.AccountPlan__c_T AS A
 LEFT OUTER JOIN sfdc.[Id_Account_fullData] AS B
 ON A.AIMSAccount__c = B.AIMSAccount__c AND B.RecordTypeId = @AcctRecordTypeId
@@ -106,7 +106,7 @@ DECLARE
 --  SET PER Record Count
 SET @RecordCount = 
 	(SELECT count(*)
-    FROM sfdc.AccountPlan__c_L_01)
+    FROM sfdc.AccountPlan__c_L_02)
 
 UPDATE sfdc.Migration_Status 
 	SET 
@@ -117,4 +117,4 @@ UPDATE sfdc.Migration_Status
     endDateTime = GETDATE()
     ,recordCount=@RecordCount
     ,status='COMPLETED' 
-WHERE stepsID = '11_01_03_1';
+WHERE stepsID = '11_01_03_2';
