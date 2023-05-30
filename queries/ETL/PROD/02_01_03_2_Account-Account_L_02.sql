@@ -5,7 +5,8 @@ USE Salesforce
 
 DECLARE 
     @ABTSupportId AS VARCHAR(18) = NULL,
-    @RecordTypeId AS VARCHAR(20) = NULL
+    @RecordTypeId AS VARCHAR(20) = NULL,
+    @RecordCount AS INT = NULL
 
 --	Obtain User.Id value for User.Alias = 'ABTSuppt'
 SET @ABTSupportId = 
@@ -15,11 +16,11 @@ SET @ABTSupportId =
     WHERE Alias = 'ABTSuppt')
 
 --  SET PER ENVIRONMENT
-SET @RecordTypeId = '012770000004LOvAAM' -- prod RT Account
-
-
-DECLARE 
-    @RecordCount AS INT = NULL
+SET @RecordTypeId = 
+	(SELECT Id 
+--  SET CORRECT TABLE NAME BELOW !!
+    FROM sfdc.[Id_RecordType_prod]
+    WHERE DeveloperName = 'Account' AND IsActive = 'true')
 
 
 Insert INTO sfdc.Migration_Status (
@@ -31,9 +32,9 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
-	,'Account_Team_Member E (Extract)'
-	,'Extract Account Primary'
+	'02_01_03_2'
+	,'Account RT Account L (Load)'
+	,'Load Account RT Account - Parent Account Id'
 	,GETDATE()
 	--,''
 	,0
@@ -144,6 +145,23 @@ LEFT JOIN sfdc.[Id_Account_prod] AS F -- for Account.Id
 ON A.AIMSAccount__c = F.AIMSAccount__c AND F.RecordTypeId = @RecordTypeId
 
 WHERE F.Id IS NULL
+
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Account_Account_L_02)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '02_01_03_2';
 
 
 /*
