@@ -6,7 +6,8 @@ USE Salesforce
 DECLARE 
     @ABTSupportId AS VARCHAR(18) = NULL,
     @AcctRecordTypeId AS VARCHAR(18) = NULL,
-    @LocRecordTypeId AS VARCHAR(20) = NULL
+    @LocRecordTypeId AS VARCHAR(20) = NULL,
+    @RecordCount AS INT = NULL
 
 --	Obtain User.Id value for User.Alias = 'ABTSuppt'
 SET @ABTSupportId = 
@@ -16,12 +17,16 @@ SET @ABTSupportId =
     WHERE Alias = 'ABTSuppt')
 
 --  SET PER ENVIRONMENT
-SET @AcctRecordTypeId = '012770000004LOvAAM' -- prod Account RT Account
-SET @LocRecordTypeId = '012770000004LOwAAM' -- prod Account RT Location
-
-
-DECLARE 
-    @RecordCount AS INT = NULL
+SET @AcctRecordTypeId = 
+	(SELECT Id 
+--  SET CORRECT TABLE NAME BELOW !!
+    FROM sfdc.[Id_RecordType_prod]
+    WHERE DeveloperName = 'Account' AND IsActive = 'true')
+SET @LocRecordTypeId = 
+	(SELECT Id 
+--  SET CORRECT TABLE NAME BELOW !!
+    FROM sfdc.[Id_RecordType_prod]
+    WHERE DeveloperName = 'Location' AND IsActive = 'true')
 
 
 Insert INTO sfdc.Migration_Status (
@@ -33,9 +38,9 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
-	,'Account_Team_Member E (Extract)'
-	,'Extract Account Primary'
+	'03_01_03_1'
+	,'Account RT Location L (Load)'
+	,'Load Account RT Location'
 	,GETDATE()
 	--,''
 	,0
@@ -43,6 +48,7 @@ Insert INTO sfdc.Migration_Status (
 );
 
 
+  DROP TABLE sfdc.Account_Location_L_01
 SELECT --TOP 1500
     AddressIntegrationId__c
 	,CASE
@@ -92,8 +98,7 @@ SELECT --TOP 1500
     ,B.OwnerId -- set via AIMSAccount__c
     ,@LocRecordTypeId AS RecordTypeId
 
---  INTO sfdc.Account_Location_L_01
---  DROP TABLE sfdc.Account_Location_L_01
+  INTO sfdc.Account_Location_L_01
 FROM sfdc.Account_Location_T AS A
 
 LEFT JOIN sfdc.[Id_Account_prod] AS B-- for OwnerId, Account__c -- VERIFY SOURCE FRESHNESS !!!
@@ -109,6 +114,24 @@ LEFT JOIN sfdc.[Id_User_prod] AS E -- for StatusUpdateUserid__c -- VERIFY SOURCE
 ON TRIM(A.StatusUpdateUserid__c) = TRIM(E.Alias) AND TRIM(E.CorpEmplId__c) IS NOT NULL
 
 ORDER BY A.AIMSAccountLocation__c
+
+
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Account_Location_L_01)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '03_01_03_1';
 
 
 
@@ -128,7 +151,7 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
+	'03_01_03_1'
 	,'Account_Team_Member E (Extract)'
 	,'Extract Account Primary'
 	,GETDATE()
@@ -150,7 +173,7 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
+	'03_01_03_1'
 	,'Account_Team_Member E (Extract)'
 	,'Extract Account Primary'
 	,GETDATE()
@@ -172,7 +195,7 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
+	'03_01_03_1'
 	,'Account_Team_Member E (Extract)'
 	,'Extract Account Primary'
 	,GETDATE()
@@ -194,7 +217,7 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
+	'03_01_03_1'
 	,'Account_Team_Member E (Extract)'
 	,'Extract Account Primary'
 	,GETDATE()

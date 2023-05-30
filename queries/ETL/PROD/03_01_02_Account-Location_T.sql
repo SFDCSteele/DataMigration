@@ -16,14 +16,17 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
-	,'Account_Team_Member E (Extract)'
-	,'Extract Account Primary'
+	'03_01_02'
+	,'Account RT Location T (Transform)'
+	,'Transform Account RT Location'
 	,GETDATE()
 	--,''
 	,0
 	,'STARTED'
 ); 
+
+  DROP TABLE sfdc.Account_Location_T
+
 
 SELECT --TOP 1 PERCENT
     AddressIntegrationId__c
@@ -74,9 +77,26 @@ SELECT --TOP 1 PERCENT
         END
     AS "Name"
   
---  INTO sfdc.Account_Location_T
---  DROP TABLE sfdc.Account_Location_T
+  INTO sfdc.Account_Location_T
 FROM sfdc.Account_Location_E
 --WHERE [Name] IS NULL OR ShippingLatitude > 90 OR ShippingLatitude < -90 OR ShippingLongitude > 180 OR ShippingLongitude < -180
 ORDER BY AddressIntegrationId__c
+
+
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Account_Location_T)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '03_01_02';
 

@@ -16,14 +16,15 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
-	,'Account_Team_Member E (Extract)'
-	,'Extract Account Primary'
+	'03_01_01'
+	,'Account RT Location E (Extract)'
+	,'Extract Account RT Location'
 	,GETDATE()
 	--,''
 	,0
 	,'STARTED'
 );
+  DROP TABLE sfdc.Account_Location_E
 
 SELECT --TOP 0.1 PERCENT
     AddressIntegrationId AS "AddressIntegrationId__c"
@@ -63,11 +64,28 @@ SELECT --TOP 0.1 PERCENT
     ,LEFT(CONCAT(TRIM(Address1), ' ', TRIM(City), ' ', TRIM(StateCode), ' ', TRIM(CountryCode)), 255)
         AS [Name] -- PK 230419  has revised this again; need neew formula
 
---  INTO sfdc.Account_Location_E
---  DROP TABLE sfdc.Account_Location_E
--- FROM osc.ACCOUNT_LOCATION_SEED AS A -- base load tables
+  INTO sfdc.Account_Location_E
+ FROM osc.ACCOUNT_LOCATION_SEED AS A -- base load tables
 -- FROM oscd.ACCOUNT_LOCATION_SEED AS A -- delta load tables
 LEFT JOIN sfdc.ACCOUNT_ACCOUNT_T AS B
 ON A.AIMS_ACCT = B.AIMSAccount__c
+
+
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Account_Location_E)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '03_01_01';
 
 
