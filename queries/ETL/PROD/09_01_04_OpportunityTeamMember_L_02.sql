@@ -16,13 +16,13 @@ SELECT DISTINCT TOP 1 PERCENT
 --  DROP TABLE sfdc.OpportunityTeamMember_L_02
 FROM sfdc.OpportunityTeamMember_T AS A
 
-LEFT JOIN sfdc.[Id_User_fullData_230328-1657] AS B
+LEFT JOIN sfdc.[Id_User_prod_230328-1657] AS B
 ON A.CorpEmplId__c = B.CorpEmplId__c
 
-LEFT JOIN sfdc.[Id_Opportunity_fullData_230331-0930] AS C
+LEFT JOIN sfdc.[Id_Opportunity_prod_230331-0930] AS C
 ON A.PACE_OpportunityID__c = C.PACE_OpportunityID__c 
 
-LEFT JOIN sfdc.[Id_OpportunityTeamMember_fullData_230403-1247] AS D -- lookup Id value for Upserts
+LEFT JOIN sfdc.[Id_OpportunityTeamMember_prod_230403-1247] AS D -- lookup Id value for Upserts
 ON A.PACE_OpportunityID__c = D.PACE_OpportunityID__c
 
 WHERE A.PACE_OpportunityID__c IS NOT NULL AND B.CorpEmplId__c IS NOT NULL AND C.PACE_OpportunityID__c IS NOT NULL

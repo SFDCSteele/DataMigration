@@ -1,5 +1,5 @@
 --	HealthCheck_E.sql HealthCheck target object view extraction query to table HealthCheck_E
---  LAST RUN:   230518 fulldata
+--  LAST RUN:   230518 prod
 
 USE Salesforce;
   DROP TABLE sfdc.HealthCheck_E

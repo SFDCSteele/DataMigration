@@ -1,6 +1,6 @@
 --  Account-Account_L_01.sql Account RT Account target object view load query to table Account_Account_L
 --  Lookup of B.OwnerId, C.CreatedById, and D.LastModifiedById for respective org.User
---  lAST RUN:   230516 fulldata
+--  lAST RUN:   230516 prod
 
 USE Salesforce
 
@@ -12,19 +12,19 @@ DECLARE
 --	Obtain User.Id value for User.Alias = 'ABTSuppt'
 SET @ABTSupportId = 
 	(SELECT Id 
-    FROM sfdc.[Id_User_fullData]
+    FROM sfdc.[Id_User_prod]
     WHERE Alias = 'ABTSuppt')
 
 --  SET PER ENVIRONMENT
 SET @AccountAccountRecordTypeId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_RecordType_fullData]
+    FROM sfdc.[Id_RecordType_prod]
     WHERE DeveloperName = 'Account' AND IsActive = 'true')
 SET @AccountLocationRecordTypeId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_RecordType_fullData]
+    FROM sfdc.[Id_RecordType_prod]
     WHERE DeveloperName = 'Location' AND IsActive = 'true')
 
 Select 
@@ -37,4 +37,4 @@ Select
       ,@AccountAccountRecordTypeId AS AccountAccountRecordType
       ,@AccountLocationRecordTypeId AS AccountLocationRecordType
 
-From [sfdc].[Id_RecordType_fullData]
+From [sfdc].[Id_RecordType_prod]

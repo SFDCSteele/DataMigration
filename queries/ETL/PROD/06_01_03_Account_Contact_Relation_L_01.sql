@@ -28,14 +28,14 @@ DECLARE
 SET @ABTSupportId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_User_fullData]
+    FROM sfdc.[Id_User_prod]
     WHERE Alias = 'ABTSuppt')
 
 --  SET PER ENVIRONMENT
 SET @AccountAccountRecordTypeId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_RecordType_fullData]
+    FROM sfdc.[Id_RecordType_prod]
     WHERE DeveloperName = 'Account' AND IsActive = 'true')
 
 	DROP TABLE sfdc.Account_Contact_Relation_L_01
@@ -57,13 +57,13 @@ SELECT --TOP,  0.3 PERCENT
   INTO sfdc.Account_Contact_Relation_L_01
 FROM sfdc.Account_Contact_Relation_T AS A
 
-LEFT JOIN sfdc.[Id_Account_fullData] AS C-- for Account__c
+LEFT JOIN sfdc.[Id_Account_prod] AS C-- for Account__c
 ON TRIM(A.AIMSAccount__c) = TRIM(C.AIMSAccount__c)  AND C.RecordTypeId = @AccountAccountRecordTypeId
 
-LEFT JOIN sfdc.[Id_Contact_fullData] AS D-- for Contact__c
+LEFT JOIN sfdc.[Id_Contact_prod] AS D-- for Contact__c
 ON TRIM(A.ContactIntegrationId__c) = TRIM(D.ContactIntegrationId__c)
 
-LEFT JOIN sfdc.[Id_AccountContactRelation_fullData] AS E
+LEFT JOIN sfdc.[Id_AccountContactRelation_prod] AS E
 ON D.Id = E.CONTACTID AND C.Id = E.ACCOUNTID
 
 

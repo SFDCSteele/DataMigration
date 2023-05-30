@@ -1,5 +1,5 @@
 --  OpportunityContactRole_L_01.sql -- Load #01 query for OpportunityContactRole object
---  LAST RUN:  230523 fulldata
+--  LAST RUN:  230523 prod
 
 USE SALESFORCE
 

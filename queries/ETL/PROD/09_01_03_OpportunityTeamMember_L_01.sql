@@ -1,5 +1,5 @@
 --  OpportunityTeamMember_L_01.sql -- Load #01 query for OpportunityTeamMember object
---  LAST RUN:   230522 fulldata
+--  LAST RUN:   230522 prod
 USE SALESFORCE
 
 SELECT DISTINCT TOP 1 PERCENT
@@ -18,10 +18,10 @@ SELECT DISTINCT TOP 1 PERCENT
 --  DROP TABLE sfdc.OpportunityTeamMember_L_01
 FROM sfdc.OpportunityTeamMember_T AS A
 
-LEFT JOIN sfdc.[Id_User_fullData_230516-1405] AS B -- lookup User.Id as UserId
+LEFT JOIN sfdc.[Id_User_prod] AS B -- lookup User.Id as UserId
 ON A.CorpEmplId__c = B.CorpEmplId__c AND B.CorpEmplId__c IS NOT NULL
 
-LEFT JOIN sfdc.[Id_Opportunity_fullData_230518-1111] AS C -- lookup Opportunity.Id AS OpportunityId
+LEFT JOIN sfdc.[Id_Opportunity_prod] AS C -- lookup Opportunity.Id AS OpportunityId
 ON A.PACE_OpportunityID__c = C.PACE_OpportunityID__c AND A.PACE_OpportunityRevenueId__c = C.PACE_OpportunityRevenueId__c 
 
 ORDER BY A.PACE_OpportunityID__c, A.PACE_OpportunityRevenueId__c, A.Primary__c DESC, A.CorpEmplId__c

@@ -10,7 +10,7 @@ DECLARE
 SET @ABTSupportId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_User_fullData]
+    FROM sfdc.[Id_User_prod]
     WHERE Alias = 'ABTSuppt')
 
 --  MANUAL VALUE ENTRIES PER ENVIRONMENT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -18,10 +18,10 @@ SET @ABTSupportId =
 SET @AcctRecordTypeId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_RecordType_fullData]
+    FROM sfdc.[Id_RecordType_prod]
     WHERE DeveloperName = 'Account' AND IsActive = 'true')
 
-DROP TABLE sfdc.[Id_User_Reference_fullData];
+DROP TABLE sfdc.[Id_User_Reference_prod];
 
 SELECT
     Id
@@ -30,14 +30,14 @@ SELECT
     ,CONCAT (District__c,'-',Territory__c) as District_Territory_key
 	,Title
 	,IsActive
-INTO sfdc.[Id_User_Reference_fullData]
+INTO sfdc.[Id_User_Reference_prod]
 
-FROM [sfdc].[Id_User_fullData]
+FROM [sfdc].[Id_User_prod]
 where CorpEmplID__c IS NOT NULL AND IsActive = 'true' AND Alias <> 'Corp01'
 order by Id
 
 create index District_Territory_Index
-    on sfdc.[Id_User_Reference_fullData](District_Territory_key);
+    on sfdc.[Id_User_Reference_prod](District_Territory_key);
 
 -- Account RT Location Primary owner
 
@@ -80,10 +80,10 @@ SELECT --TOP 0.3 PERCENT
 
   INTO sfdc.Account_Team_Member_Location_Primary_L_02_1
 FROM sfdc.Account_Team_Member_Location_Primary_T AS A
-LEFT JOIN sfdc.[Id_User_Reference_fullData] AS B -- for OwnerId
+LEFT JOIN sfdc.[Id_User_Reference_prod] AS B -- for OwnerId
 ON A.territory = B.District_Territory_key
 
-LEFT JOIN sfdc.[Id_Account_fullData] AS C-- for OwnerId, Account__c
+LEFT JOIN sfdc.[Id_Account_prod] AS C-- for OwnerId, Account__c
 ON A.AIMS_LOC = C.[AIMSAccountLocation__c] AND C.RecordTypeId=@AcctRecordTypeId
 
 where  C.Id is not null
@@ -151,10 +151,10 @@ SELECT --TOP 0.3 PERCENT
 
   INTO sfdc.Account_Team_Member_Location_Secondary_L_02_2
 FROM sfdc.Account_Team_Member_Location_Secondary_T AS A
-LEFT JOIN sfdc.[Id_User_Reference_fullData] AS B -- for OwnerId
+LEFT JOIN sfdc.[Id_User_Reference_prod] AS B -- for OwnerId
 ON A.territory = B.District_Territory_key
 
-LEFT JOIN sfdc.[Id_Account_fullData] AS C-- for OwnerId, Account__c
+LEFT JOIN sfdc.[Id_Account_prod] AS C-- for OwnerId, Account__c
 ON A.AIMS_LOC = C.[AIMSAccountLocation__c] AND C.RecordTypeId=@AcctRecordTypeId
 
 --where  C.Id is not null

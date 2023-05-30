@@ -1,5 +1,5 @@
 -- Opportunity_T.sql
---  LAST RUN:  230517 fulldata
+--  LAST RUN:  230517 prod
 
 USE Salesforce
 

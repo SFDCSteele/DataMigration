@@ -1,5 +1,5 @@
 -- Opportunity_L_02.sql -- StageName field history event
---  LAST RUN:  230523 fulldata
+--  LAST RUN:  230523 prod
 
 USE Salesforce
 Insert INTO sfdc.Migration_Status (
@@ -27,7 +27,7 @@ SELECT --top 1000
     ,'Closed Lost' AS StageName
 
   INTO sfdc.Opportunity_L_02
-FROM sfdc.[Id_Opportunity_fullData]
+FROM sfdc.[Id_Opportunity_prod]
 WHERE StatusCode__c = 'Lost' AND Id IS NOT NULL
     AND (StageName = 'Needs Analysis'
         OR StageName = 'Negotiation' 

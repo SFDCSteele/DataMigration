@@ -28,14 +28,14 @@ DECLARE
 SET @ABTSupportId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_User_fullData]
+    FROM sfdc.[Id_User_prod]
     WHERE Alias = 'ABTSuppt')
 
 --  SET PER ENVIRONMENT
 SET @AccountAccountRecordTypeId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_RecordType_fullData]
+    FROM sfdc.[Id_RecordType_prod]
     WHERE DeveloperName = 'Account' AND IsActive = 'true')
 
 	DROP TABLE sfdc.Event_L_01
@@ -87,30 +87,30 @@ SELECT --TOP 0.3 PERCENT
   INTO sfdc.Event_L_01
 FROM sfdc.Event_T AS A
 
-LEFT JOIN sfdc.[Id_User_fullData] AS B -- for CreatedById
+LEFT JOIN sfdc.[Id_User_prod] AS B -- for CreatedById
 ON TRIM(A.CreatedById) = TRIM(B.Alias) AND B.CorpEmplID__c IS NOT NULL
 
-LEFT JOIN sfdc.[Id_User_fullData] AS C -- for LastModifiedById
+LEFT JOIN sfdc.[Id_User_prod] AS C -- for LastModifiedById
 ON TRIM(A.LastModifiedById) = TRIM(C.Alias) AND C.CorpEmplID__c IS NOT NULL
 
 --LEFT JOIN osc.activity_team_seed AS D1 -- for OwnerId
 LEFT JOIN osc.[activity_team_seed] AS D1
 ON A.PACE_ActivityId__c = D1.ActivityId AND D1.[PrimaryFlag] = 1
-LEFT JOIN sfdc.[Id_User_fullData] AS D2 -- for OwnerId
+LEFT JOIN sfdc.[Id_User_prod] AS D2 -- for OwnerId
 ON TRIM(D1.CorpEmplID__c) = TRIM(D2.CorpEmplID__c) AND D2.CorpEmplID__c IS NOT NULL
 
 LEFT JOIN osc.activity_contact_seed AS E1 -- for contact
 ON A.PACE_ActivityId__c = E1.ActivityId AND E1.PrimaryFlag = 1
-LEFT JOIN sfdc.[Id_Contact_fullData] AS E2 -- for contact
+LEFT JOIN sfdc.[Id_Contact_prod] AS E2 -- for contact
 ON TRIM(E1.ContactIntegrationId) = TRIM(e2.CONTACTINTEGRATIONID__C)
 
-LEFT JOIN sfdc.[Id_Opportunity_fullData] AS F
+LEFT JOIN sfdc.[Id_Opportunity_prod] AS F
 ON A.PACE_OpportunityID__c = F.PACE_OpportunityID__c 
 
-LEFT JOIN sfdc.[Id_Account_fullData] AS G-- for Account__c
+LEFT JOIN sfdc.[Id_Account_prod] AS G-- for Account__c
 ON TRIM(A.AIMSAccount__c) = TRIM(G.AIMSAccount__c) AND G.RecordTypeId = @RecordTypeId
 
---LEFT JOIN sfdc.[Id_Event_fullData] AS X-- for activity record Id values
+--LEFT JOIN sfdc.[Id_Event_prod] AS X-- for activity record Id values
 --ON TRIM(A.A.PACE_ActivityId__c) = TRIM(X.[ActivityId]) 
 
 

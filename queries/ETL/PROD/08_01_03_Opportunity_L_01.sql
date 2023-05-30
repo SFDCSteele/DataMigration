@@ -1,5 +1,5 @@
 -- Opportunity_L_01.sql Base load to Opportunity_L_01
---  LAST RUN:  230517 fulldata
+--  LAST RUN:  230517 prod
 
 USE Salesforce
 
@@ -33,7 +33,7 @@ DECLARE
 SET @ABTSupportId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_User_fullData]
+    FROM sfdc.[Id_User_prod]
     WHERE Alias = 'ABTSuppt')
 
 --  MANUAL VALUE ENTRIES PER ENVIRONMENT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -41,27 +41,27 @@ SET @ABTSupportId =
 SET @AcctRecordTypeId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_RecordType_fullData]
+    FROM sfdc.[Id_RecordType_prod]
     WHERE DeveloperName = 'Account' AND IsActive = 'true')
 SET @OptyCrossSellRecordTypeId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_RecordType_fullData]
+    FROM sfdc.[Id_RecordType_prod]
     WHERE DeveloperName = 'Cross Sell' AND IsActive = 'true')
 SET @OptyExpandRecordTypeId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_RecordType_fullData]
+    FROM sfdc.[Id_RecordType_prod]
     WHERE DeveloperName = 'Expand' AND IsActive = 'true')
 SET @OptyNewRecordTypeId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_RecordType_fullData]
+    FROM sfdc.[Id_RecordType_prod]
     WHERE DeveloperName = 'New' AND IsActive = 'true')
 SET @OptyRetainRecordTypeId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_RecordType_fullData]
+    FROM sfdc.[Id_RecordType_prod]
     WHERE DeveloperName = 'Retain' AND IsActive = 'true')
 --  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
@@ -142,19 +142,19 @@ SELECT --TOP 10000
   INTO sfdc.Opportunity_L_01
 FROM sfdc.Opportunity_T AS A
 
-LEFT JOIN sfdc.[Id_Account_fullData] AS B
+LEFT JOIN sfdc.[Id_Account_prod] AS B
 ON A.AIMSAccount__c = B.AIMSAccount__c AND B.RecordTypeId = @AcctRecordTypeId
 
-LEFT JOIN sfdc.[Id_User_fullData] AS C -- for OwnerId, 
+LEFT JOIN sfdc.[Id_User_prod] AS C -- for OwnerId, 
 ON A.OwnerCorpEmplId__c = C.CorpEmplID__c AND C.CorpEmplID__c IS NOT NULL
 
-LEFT JOIN sfdc.[Id_User_fullData] AS D -- for CreatedById
+LEFT JOIN sfdc.[Id_User_prod] AS D -- for CreatedById
 ON A.CreatedById = D.Alias AND D.CorpEmplID__c IS NOT NULL
 
-LEFT JOIN sfdc.[Id_User_fullData] AS E -- for LastModifiedById
+LEFT JOIN sfdc.[Id_User_prod] AS E -- for LastModifiedById
 ON A.LastModifiedById = E.Alias AND E.CorpEmplID__c IS NOT NULL
 
-LEFT JOIN sfdc.[Id_Opportunity_fullData] AS F -- for Opportunity.Id in Opportunity_L_03
+LEFT JOIN sfdc.[Id_Opportunity_prod] AS F -- for Opportunity.Id in Opportunity_L_03
 ON A.PACE_OpportunityID__c = F.PACE_OpportunityID__c 
     AND A.PACE_OpportunityRevenueId__c = F.PACE_OpportunityRevenueId__c
 
@@ -162,7 +162,7 @@ ON A.PACE_OpportunityID__c = F.PACE_OpportunityID__c
 WHERE F.Id is null
 /*
 -- for L_03:
-LEFT JOIN sfdc.[Id_Opportunity_fullData] AS F -- for Opportunity.Id in Opportunity_L_03
+LEFT JOIN sfdc.[Id_Opportunity_prod] AS F -- for Opportunity.Id in Opportunity_L_03
 ON A.PACE_OpportunityID__c = F.PACE_OpportunityID__c 
     AND A.PACE_OpportunityRevenueId__c = F.PACE_OpportunityRevenueId__c 
     AND F.PACE_OpportunityRevenueId__c IS NOT NULL

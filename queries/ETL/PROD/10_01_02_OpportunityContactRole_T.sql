@@ -1,5 +1,5 @@
 --  OpportunityContactRole_T.sql -- Transform query for OpportunityContactRole object
---  LAST RUN:  230523 fulldata
+--  LAST RUN:  230523 prod
 USE SALESFORCE
 
 SELECT --TOP 1 PERCENT

@@ -1,33 +1,33 @@
 --  Account-Account_L_01.sql Account RT Account target object view load query to table Account_Account_L
 --  Lookup of B.OwnerId, C.CreatedById, and D.LastModifiedById for respective org.User
---  lAST RUN:   230516 fulldata
+--  lAST RUN:   230516 prod
 
 USE Salesforce
 
 
-DROP Table sfdc.[Id_User_fullData]
+DROP Table sfdc.[Id_User_prod]
 
 select * 
-    INTO sfdc.[Id_User_fullData]
-from sfdc.[Id_User_fullData_230524-1448]
+    INTO sfdc.[Id_User_prod]
+from sfdc.[Id_User_prod]
 
-DROP Table sfdc.[Id_Account_fullData]
-
-select * 
-    INTO sfdc.[Id_Account_fullData]
-from sfdc.[Id_Account_fullData_230524-2012]
-
-DROP Table sfdc.[Id_Contact_fullData]
+DROP Table sfdc.[Id_Account_prod]
 
 select * 
-    INTO sfdc.[Id_Contact_fullData]
-from sfdc.[Id_Contact_fullData_230518-0928]
-DROP Table sfdc.[Id_AccountContactRelation_fullData]
+    INTO sfdc.[Id_Account_prod]
+from sfdc.[Id_Account_prod]
+
+DROP Table sfdc.[Id_Contact_prod]
+
+select * 
+    INTO sfdc.[Id_Contact_prod]
+from sfdc.[Id_Contact_prod]
+DROP Table sfdc.[Id_AccountContactRelation_prod]
 
 
 select * 
-    INTO sfdc.[Id_AccountContactRelation_fullData]
-from sfdc.[Id_AccountContactRelation_fullData_230518-1139]
+    INTO sfdc.[Id_AccountContactRelation_prod]
+from sfdc.[Id_AccountContactRelation_prod_230518-1139]
 
 
 CREATE TABLE sfdc.Migration_Status (

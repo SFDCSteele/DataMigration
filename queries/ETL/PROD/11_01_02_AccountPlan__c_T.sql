@@ -1,5 +1,5 @@
 -- AccountPlan__c_T.sql
---  LAST RUN:  230518 fulldata
+--  LAST RUN:  230518 prod
 USE SALESFORCE
 
 Insert INTO sfdc.Migration_Status (

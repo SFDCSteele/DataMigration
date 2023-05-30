@@ -10,7 +10,7 @@ DECLARE
 SET @ABTSupportId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_User_fullData_230501-1801]
+    FROM sfdc.[Id_User_prod]
     WHERE Alias = 'Corp01' AND CorpEmplID__c IS NOT NULL)
 
 SELECT   --TOP 0.1 PERCENT 
@@ -23,7 +23,7 @@ FROM sfdc.Contact_T AS A
 LEFT JOIN sfdc.Account_Contact_Relation_T AS B-- for Account__c
 ON TRIM(A.ContactIntegrationId__c) = TRIM(B.ContactIntegrationId__c) 
 
-LEFT JOIN sfdc.[Id_Account_fullData_230502-1300] AS E-- for Account__c
+LEFT JOIN sfdc.[Id_Account_prod_230502-1300] AS E-- for Account__c
 ON TRIM(B.AIMSAccount__c) = TRIM(E.[AIMSAccount__c]) AND E.RecordTypeId = '012770000004LOvAAM'
 
 where B.Primary__c = 'true'
@@ -50,13 +50,13 @@ SELECT  -- TOP 0.1 PERCENT
   INTO sfdc.Contact_L_03
 FROM sfdc.Contact_T AS A
 
-LEFT JOIN sfdc.[Id_User_fullData_230501-1801] AS B -- for OwnerId
+LEFT JOIN sfdc.[Id_User_prod] AS B -- for OwnerId
 ON TRIM(A.OwnerCorpEmplId__c) = TRIM(B.Alias) and B.CorpEmplID__c IS NOT NULL
 
 LEFT JOIN sfdc.[Contact_L_03_A] AS E-- for Account__c
 ON TRIM(A.ContactIntegrationId__c) = TRIM(E.[ContactIntegrationId__c]) --AND E.RecordTypeId = '012770000004LOvAAM'
 
-LEFT JOIN [sfdc].[Id_Contact_fullData] AS F -- for contact Id
+LEFT JOIN [sfdc].[Id_Contact_prod] AS F -- for contact Id
 ON TRIM(A.[CONTACTINTEGRATIONID__C]) = TRIM(F.[CONTACTINTEGRATIONID__C])
 
 Where F.Id is not null AND E.AccountId is not null

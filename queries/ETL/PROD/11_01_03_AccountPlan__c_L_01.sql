@@ -1,5 +1,5 @@
 -- AccountPlan__c_L_01
---  LAST RUN:   230518 fulldata
+--  LAST RUN:   230518 prod
 
 USE SALESFORCE
 
@@ -30,7 +30,7 @@ DECLARE
 SET @ABTSupportId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_User_fullData]
+    FROM sfdc.[Id_User_prod]
     WHERE Alias = 'ABTSuppt')
 
 --  MANUAL VALUE ENTRIES PER ENVIRONMENT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -39,7 +39,7 @@ SET @ABTSupportId =
 SET @AccountAccountRecordTypeId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_RecordType_fullData]
+    FROM sfdc.[Id_RecordType_prod]
     WHERE DeveloperName = 'Account' AND IsActive = 'true')
 
 SELECT
@@ -84,18 +84,18 @@ SELECT
 --  INTO sfdc.AccountPlan__c_L_01
 --  DROP TABLE sfdc.AccountPlan__c_L_01
 FROM sfdc.AccountPlan__c_T AS A
-LEFT OUTER JOIN sfdc.[Id_Account_fullData] AS B
+LEFT OUTER JOIN sfdc.[Id_Account_prod] AS B
 ON A.AIMSAccount__c = B.AIMSAccount__c AND B.RecordTypeId = @AcctRecordTypeId
-LEFT OUTER JOIN sfdc.[Id_User_fullData] AS C
+LEFT OUTER JOIN sfdc.[Id_User_prod] AS C
 ON A.OwnerCorpEmplId__c = C.CorpEmplID__c AND C.CorpEmplID__c IS NOT NULL
-LEFT OUTER JOIN sfdc.[Id_User_fullData] AS D
+LEFT OUTER JOIN sfdc.[Id_User_prod] AS D
 ON A.CreatedById = D.Alias AND D.CorpEmplID__c IS NOT NULL
-LEFT OUTER JOIN sfdc.[Id_User_fullData] AS E
+LEFT OUTER JOIN sfdc.[Id_User_prod] AS E
 ON A.LastModifiedById = E.Alias AND E.CorpEmplID__c IS NOT NULL
 ORDER BY PACE_BusinessPlanId__c
 
 
-LEFT JOIN sfdc.[Id_AccountPlan__c_fullData] AS F-- for Contact record Id values
+LEFT JOIN sfdc.[Id_AccountPlan__c_prod] AS F-- for Contact record Id values
 ON TRIM(A.PACE_BusinessPlanId__c) = TRIM(F.[BusinessPlanId]) 
 
 Where F.Id is null

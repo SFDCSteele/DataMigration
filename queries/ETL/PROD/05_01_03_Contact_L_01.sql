@@ -31,14 +31,14 @@ DECLARE
 SET @ABTSupportId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_User_fullData]
+    FROM sfdc.[Id_User_prod]
     WHERE Alias = 'ABTSuppt')
 
 --  SET PER ENVIRONMENT
 SET @AccountAccountRecordTypeId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_RecordType_fullData]
+    FROM sfdc.[Id_RecordType_prod]
     WHERE DeveloperName = 'Account' AND IsActive = 'true')
 
 --get account Id to be assigned to applicable contacts
@@ -52,7 +52,7 @@ FROM sfdc.Contact_T AS A
 LEFT JOIN sfdc.Account_Contact_Relation_T AS B-- for Account__c
 ON TRIM(A.ContactIntegrationId__c) = TRIM(B.ContactIntegrationId__c) 
 
-LEFT JOIN sfdc.[Id_Account_fullData] AS E-- for Account__c
+LEFT JOIN sfdc.[Id_Account_prod] AS E-- for Account__c
 ON TRIM(B.AIMSAccount__c) = TRIM(E.[AIMSAccount__c]) AND E.RecordTypeId = @AccountAccountRecordTypeId
 
 where B.Primary__c = 'true'
@@ -135,19 +135,19 @@ SELECT  -- TOP 0.1 PERCENT
   INTO sfdc.Contact_L_01
 FROM sfdc.Contact_T AS A
 
-LEFT JOIN sfdc.[Id_User_fullData] AS B -- for OwnerId
+LEFT JOIN sfdc.[Id_User_prod] AS B -- for OwnerId
 ON A.OwnerCorpEmplId__c = B.CorpEmplId__c AND B.CorpEmplId__c IS NOT NULL
 
-LEFT JOIN sfdc.[Id_User_fullData] AS C -- for CreatedById
+LEFT JOIN sfdc.[Id_User_prod] AS C -- for CreatedById
 ON TRIM(A.CreatedById) = TRIM(C.Alias) and C.CorpEmplID__c IS NOT NULL
 
-LEFT JOIN sfdc.[Id_User_fullData] AS D -- for LastModifiedById
+LEFT JOIN sfdc.[Id_User_prod] AS D -- for LastModifiedById
 ON TRIM(A.LastModifiedById) = TRIM(D.Alias) and D.CorpEmplID__c IS NOT NULL
 
 LEFT JOIN sfdc.[Contact_L_01_A] AS E-- for Account__c
 ON TRIM(A.ContactIntegrationId__c) = TRIM(E.[ContactIntegrationId__c]) 
 
-LEFT JOIN sfdc.[Id_Contact_fullData] AS F-- for Contact record Id values
+LEFT JOIN sfdc.[Id_Contact_prod] AS F-- for Contact record Id values
 ON TRIM(A.ContactIntegrationId__c) = TRIM(F.[ContactIntegrationId__c]) 
 
 where F.Id is NULL
