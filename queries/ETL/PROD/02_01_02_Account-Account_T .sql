@@ -16,14 +16,15 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
-	,'Account_Team_Member E (Extract)'
-	,'Extract Account Primary'
+	'02_01_02'
+	,'Account T (Transform)'
+	,'Transform Account'
 	,GETDATE()
 	--,''
 	,0
 	,'STARTED'
 );
+  DROP TABLE sfdc.Account_Account_T
 
 SELECT  -- TOP 0.1 PERCENT 
     AIMSAccount__c
@@ -233,6 +234,22 @@ SELECT  -- TOP 0.1 PERCENT
 	,ABCreditAppStatus__c -- picklost with correct values in source
 	,ALCreditAppStatus__c -- picklost with correct values in source
 
---  INTO sfdc.Account_Account_T
---  DROP TABLE sfdc.Account_Account_T
+  INTO sfdc.Account_Account_T
 FROM sfdc.Account_Account_E
+
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Account_Account_T)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '02_01_02';

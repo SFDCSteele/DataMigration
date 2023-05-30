@@ -15,14 +15,15 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
-	,'Account_Team_Member E (Extract)'
-	,'Extract Account Primary'
+	'02_01_01'
+	,'Account E (Extract)'
+	,'Extract Account'
 	,GETDATE()
 	--,''
 	,0
 	,'STARTED'
 );
+DROP TABLE sfdc.Account_Account_E
 
 SELECT --TOP 0.1 PERCENT
     AIMS_ACCT AS "AIMSAccount__c"
@@ -89,7 +90,23 @@ SELECT --TOP 0.1 PERCENT
     ,OrganizationDEO_ABCreditAppStatus_c AS "ABCreditAppStatus__c"
     ,OrganizationDEO_ALCreditAppStatus_c AS "ALCreditAppStatus__c"
 
--- INTO sfdc.Account_Account_E
--- DROP TABLE sfdc.Account_Account_E
---FROM osc.ACCOUNT_SEED; -- base load seed table
+ INTO sfdc.Account_Account_E
+FROM osc.ACCOUNT_SEED; -- base load seed table
 --FROM oscd.ACCOUNT_SEED; -- delta load seed table
+
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Account_Account_E)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '02_01_01';

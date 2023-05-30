@@ -4,16 +4,18 @@
 --      where PrimaryLocation__c = 'true'
 --  LAST RUN:  230525 prod delta
 
-DECLARE 
-    @RecordTypeId AS VARCHAR(20) = NULL
---  SET PER ENVIRONMENT
-SET @RecordTypeId = '012770000004LOvAAM' -- prod RT Account
-
 USE Salesforce
 
 DECLARE 
+    @RecordTypeId AS VARCHAR(20) = NULL,
     @RecordCount AS INT = NULL
 
+--  SET PER ENVIRONMENT
+SET @RecordTypeId = 
+	(SELECT Id 
+--  SET CORRECT TABLE NAME BELOW !!
+    FROM sfdc.[Id_RecordType_prod]
+    WHERE DeveloperName = 'Account' AND IsActive = 'true')
 
 Insert INTO sfdc.Migration_Status (
     stepsID
@@ -24,15 +26,16 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
-	,'Account_Team_Member E (Extract)'
-	,'Extract Account Primary'
+	'02_01_03_5'
+	,'Account RT Account L (Load)'
+	,'Load Account RT Account - Shipping Address'
 	,GETDATE()
 	--,''
 	,0
 	,'STARTED'
 );
 
+	DROP TABLE sfdc.Account_Account_L_05
 SELECT  --TOP 10000
     A.Id
     ,ShippingStreet
@@ -44,8 +47,7 @@ SELECT  --TOP 10000
     ,ShippingLatitude
     ,ShippingLongitude
 
---  INTO sfdc.Account_Account_L_05
---	DROP TABLE sfdc.Account_Account_L_05
+  INTO sfdc.Account_Account_L_05
 FROM sfdc.[Id_Account_prod] AS A
 INNER JOIN sfdc.Account_Location_T AS B -- verify this works on base load too!!!!!
 ON A.AIMSAccount__c = B.AIMSAccount__c AND B.PrimaryLocation__c = 'true'
@@ -53,6 +55,22 @@ WHERE A.RecordTypeId = @RecordTypeId
 
 
 
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.Account_Account_L_05)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '02_01_03_5';
 
 /*
 
@@ -70,7 +88,7 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
+	'02_01_03'
 	,'Account_Team_Member E (Extract)'
 	,'Extract Account Primary'
 	,GETDATE()
@@ -92,7 +110,7 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
+	'02_01_03'
 	,'Account_Team_Member E (Extract)'
 	,'Extract Account Primary'
 	,GETDATE()
@@ -114,7 +132,7 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
+	'02_01_03'
 	,'Account_Team_Member E (Extract)'
 	,'Extract Account Primary'
 	,GETDATE()
@@ -136,7 +154,7 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
+	'02_01_03'
 	,'Account_Team_Member E (Extract)'
 	,'Extract Account Primary'
 	,GETDATE()
