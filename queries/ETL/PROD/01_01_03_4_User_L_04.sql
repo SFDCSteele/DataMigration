@@ -47,7 +47,7 @@ ON A.MgrCorpEmplID__c = C.CorpEmplID__c AND C.CorpEmplID__c IS NOT NULL
 
 --  Filter out ARCB System Users
 WHERE 
-	SUBSTRING(A.Username,1,12) <> 'ArcBest-Corp'  AND A.IsActive = 'true'
+	SUBSTRING(A.Username,1,12) <> 'arcbest-corp'  AND A.IsActive = 'true'
     AND B.MgrCorpEmplID__c <> ''
 
 
