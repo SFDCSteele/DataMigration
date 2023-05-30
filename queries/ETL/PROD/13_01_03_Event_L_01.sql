@@ -21,6 +21,7 @@ Insert INTO sfdc.Migration_Status (
 
 DECLARE 
     @ABTSupportId AS VARCHAR(18) = NULL,
+    @AccountAccountRecordTypeId AS VARCHAR(18) = NULL,
     @RecordTypeId AS VARCHAR(20) = NULL
 
 --	Obtain User.Id value for User.Alias = 'ABTSuppt'
@@ -37,11 +38,11 @@ SET @AccountAccountRecordTypeId =
     FROM sfdc.[Id_RecordType_fullData]
     WHERE DeveloperName = 'Account' AND IsActive = 'true')
 
-	--DROP TABLE sfdc.Event_L_01
+	DROP TABLE sfdc.Event_L_01
 
 SELECT --TOP 0.3 PERCENT
 	A.PACE_ActivityId__c 
-	, X.Id
+	--, X.Id
 	, A.AIMSAccount__c 
 	, A.[Description] 
 	, A.ActivityFunctionCode 
@@ -83,7 +84,7 @@ SELECT --TOP 0.3 PERCENT
 	, A.ChurnQuestion2__c 
 	, A.ChurnQuestion4__c
 
-  --INTO sfdc.Event_L_01
+  INTO sfdc.Event_L_01
 FROM sfdc.Event_T AS A
 
 LEFT JOIN sfdc.[Id_User_fullData] AS B -- for CreatedById
@@ -109,11 +110,11 @@ ON A.PACE_OpportunityID__c = F.PACE_OpportunityID__c
 LEFT JOIN sfdc.[Id_Account_fullData] AS G-- for Account__c
 ON TRIM(A.AIMSAccount__c) = TRIM(G.AIMSAccount__c) AND G.RecordTypeId = @RecordTypeId
 
-LEFT JOIN sfdc.[Id_Event_fullData] AS X-- for activity record Id values
-ON TRIM(A.A.PACE_ActivityId__c) = TRIM(X.[ActivityId]) 
+--LEFT JOIN sfdc.[Id_Event_fullData] AS X-- for activity record Id values
+--ON TRIM(A.A.PACE_ActivityId__c) = TRIM(X.[ActivityId]) 
 
 
-WHERE 	X.Id is null
+--WHERE 	X.Id is null
 
 --WHERE E1.ActivityId IS NOT NULL
 order by A.AIMSAccount__c,A.PACE_OpportunityID__c

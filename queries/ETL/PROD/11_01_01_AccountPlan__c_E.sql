@@ -19,6 +19,7 @@ Insert INTO sfdc.Migration_Status (
 	,0
 	,'STARTED'
 );
+  DROP TABLE sfdc.AccountPlan__c_E
 
 SELECT
     BusinessPlanId AS "Id" -- lookup in AccountPlan__c_L_02.sql
@@ -45,8 +46,7 @@ SELECT
     ,Value_c AS "Value__c"  
     ,ValuesFCL_c AS "ValuesFCL__c"
 
---  INTO sfdc.AccountPlan__c_E
---  DROP TABLE sfdc.AccountPlan__c_E
+  INTO sfdc.AccountPlan__c_E
 
 --FROM osc.BUSINESS_PLAN_SEED
 FROM oscd.BUSINESS_PLAN_SEED

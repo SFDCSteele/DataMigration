@@ -20,7 +20,7 @@ Insert INTO sfdc.Migration_Status (
 	,'STARTED'
 );
 
-  --DROP TABLE sfdc.Event_T
+  DROP TABLE sfdc.Event_T
 SELECT 
 	PACE_ActivityId__c 
 	, AIMSAccount__c 
@@ -79,7 +79,7 @@ SELECT
 	, ChurnQuestion2__c 
 	, ChurnQuestion4__c 
 	
-  --INTO sfdc.Event_T
+  INTO sfdc.Event_T
 FROM sfdc.Event_E;
 
 

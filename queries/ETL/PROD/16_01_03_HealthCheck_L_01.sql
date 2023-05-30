@@ -9,12 +9,17 @@ DECLARE
 SET @ABTSupportId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_User_fullData_230516-1405]
+    FROM sfdc.[Id_User_fullData]
     WHERE Alias = 'ABTSuppt')
 
 --  SET PER ENVIRONMENT
-SET @RecordTypeId =  '012770000004LOvAAM' -- fullData RT Account '012770000004LOvAAM' -- arcbtech RT Account '012770000004LOvAAM'
+SET @RecordTypeId = 
+	(SELECT Id 
+--  SET CORRECT TABLE NAME BELOW !!
+    FROM sfdc.[Id_RecordType_fullData]
+    WHERE DeveloperName = 'Account' AND IsActive = 'true')
 
+  DROP TABLE sfdc.HealthCheck_L_01
 SELECT
 --  Id -- lookup in L_02
 	PACEActivityId__c 
@@ -46,8 +51,7 @@ SELECT
 	,Status__c
     ,Type__c
 
---  INTO sfdc.HealthCheck_L_01
---  DROP TABLE sfdc.HealthCheck_L_01
+  INTO sfdc.HealthCheck_L_01
 FROM sfdc.HealthCheck_T AS A
 LEFT OUTER JOIN sfdc.[Id_Account_fullData_230517-0925] AS B  -- for Account.Id
 ON A.AIMSAccount__c = B.AIMSAccount__c AND B.RecordTypeId = @RecordTypeId

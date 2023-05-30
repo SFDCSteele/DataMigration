@@ -20,7 +20,7 @@ Insert INTO sfdc.Migration_Status (
 	,'STARTED'
 );
 
- --DROP TABLE sfdc.Event_E
+ DROP TABLE sfdc.Event_E
 SELECT --TOP 100 
     ActivityId AS 'PACE_ActivityId__c' 
     , AIMS_ACCT AS 'AIMSAccount__c' 
@@ -54,7 +54,7 @@ SELECT --TOP 100
     , ChurnQuestion2_c AS 'ChurnQuestion2__c' 
     , ChurnQuestion4_c AS 'ChurnQuestion4__c' 
 
- --INTO sfdc.Event_E
+ INTO sfdc.Event_E
 --FROM osc.ACTIVITY_SEED 
 FROM oscd.ACTIVITY_SEED 
     Where ActivityFunctionCode = 'APPOINTMENT' AND StatusCode <> 'CANCELED'

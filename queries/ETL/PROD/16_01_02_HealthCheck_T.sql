@@ -2,6 +2,7 @@
 --	LAST RUN:  230518
 
 USE Salesforce
+  DROP TABLE sfdc.HealthCheck_T
 SELECT  -- TOP 0.1 PERCENT 
 --  Id -- lookup in L_02
 	PACEActivityId__c
@@ -56,6 +57,5 @@ SELECT  -- TOP 0.1 PERCENT
 		AS 'Status__c'
 	,Type__c
 
---  INTO sfdc.HealthCheck_T
---  DROP TABLE sfdc.HealthCheck_T
+  INTO sfdc.HealthCheck_T
 FROM sfdc.HealthCheck_E;

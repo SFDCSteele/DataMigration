@@ -2,6 +2,7 @@
 --  LAST RUN:   230518 fulldata
 
 USE Salesforce;
+  DROP TABLE sfdc.HealthCheck_E
 SELECT
 --  Id -- lookup in L_02
      ActivityId AS 'PACEActivityId__c' -- PK for this table
@@ -21,7 +22,7 @@ SELECT
     ,StatusCode AS 'Status__c' -- picklist
     ,InternalType_c AS 'Type__c'
     
---  INTO sfdc.HealthCheck_E
---  DROP TABLE sfdc.HealthCheck_E
-    FROM osc.ACTIVITY_SEED 
+  INTO sfdc.HealthCheck_E
+--  FROM osc.ACTIVITY_SEED 
+    FROM oscd.ACTIVITY_SEED 
     Where ActivityFunctionCode = 'TASK' AND StatusCode <> 'CANCELED' AND InternalType_c = 'CUSTOMER_CHURN'

@@ -2,7 +2,8 @@
 --  LAST RUN:   2305
 USE SALESFORCE
 
-SELECT TOP 1 PERCENT
+  DROP TABLE sfdc.OpportunityTeamMember_T
+SELECT --TOP 1 PERCENT
 --    Id -- lookup in OpportunityTeamMember_L_02
     OpportunityId -- lookup via Opportunity in OpportunityTeamMember_L_01
     ,PACE_OpportunityID__c
@@ -22,7 +23,6 @@ SELECT TOP 1 PERCENT
         END
         AS "TeamMemberRole" -- picklist
 
---  INTO sfdc.OpportunityTeamMember_T
---  DROP TABLE sfdc.OpportunityTeamMember_T
+  INTO sfdc.OpportunityTeamMember_T
 FROM sfdc.OpportunityTeamMember_E
 ORDER BY PACE_OpportunityID__c, CorpEmplId__c, Primary__c

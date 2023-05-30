@@ -1,6 +1,6 @@
 --	Opportunity_Note_E.sql Account RT Account target object view extraction query to table Opportunity_Note_E
 USE Salesforce;
- --DROP TABLE sfdc.Opportunity_Note_E
+ DROP TABLE sfdc.Opportunity_Note_E
 
 SELECT --TOP 1000 
     OptyId AS 'PACE_OpportunityId__c' 
@@ -11,6 +11,7 @@ SELECT --TOP 1000
     , LastUpdatedBy AS 'LastModifiedById' 
     , NoteTxt AS 'Body'
 
- --INTO sfdc.Opportunity_Note_E
-FROM osc.OPPORTUNITY_NOTE_SEED 
+ INTO sfdc.Opportunity_Note_E
+--FROM osc.OPPORTUNITY_NOTE_SEED 
+FROM oscd.OPPORTUNITY_NOTE_SEED 
 Order by OptyId

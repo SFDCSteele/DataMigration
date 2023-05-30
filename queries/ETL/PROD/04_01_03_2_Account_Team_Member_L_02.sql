@@ -129,7 +129,7 @@ Insert INTO sfdc.Migration_Status (
 );
 
 
---DROP TABLE sfdc.Account_Team_Member_Location_Secondary_L_02_2
+DROP TABLE sfdc.Account_Team_Member_Location_Secondary_L_02_2
 SELECT --TOP 0.3 PERCENT
 	CASE
 		WHEN B.Id IS NULL OR B.Id = 'ABTSupport' THEN @ABTSupportId
@@ -149,7 +149,7 @@ SELECT --TOP 0.3 PERCENT
     ,'Edit' AS 'OPPORTUNITYACCESSLEVEL'
 
 
-  --INTO sfdc.Account_Team_Member_Location_Secondary_L_02_2
+  INTO sfdc.Account_Team_Member_Location_Secondary_L_02_2
 FROM sfdc.Account_Team_Member_Location_Secondary_T AS A
 LEFT JOIN sfdc.[Id_User_Reference_fullData] AS B -- for OwnerId
 ON A.territory = B.District_Territory_key
