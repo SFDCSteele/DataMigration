@@ -41,7 +41,7 @@ LEFT JOIN sfdc.[Id_User_prod] AS B -- lookup matching User Id
 ON A.CorpEmplID__c = B.CorpEmplID__c AND B.CorpEmplID__c IS NOT NULL
 
 --  Filter out ARCB System Users
-WHERE SUBSTRING(A.Username,1,12) <> 'ArcBest-Corp'  AND A.IsActive = 'true'
+WHERE SUBSTRING(A.Username,1,12) <> 'arcbest-corp'  AND A.IsActive = 'true'
 
 
 --  SET PER Record Count
