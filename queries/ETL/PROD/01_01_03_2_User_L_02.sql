@@ -39,7 +39,7 @@ Insert INTO sfdc.Migration_Status (
 	,'STARTED'
 );
 
---	DROP TABLE sfdc.User_L_02
+	DROP TABLE sfdc.User_L_02
 SELECT
     CASE
         WHEN @Environment = 'PROD' THEN A.Username
@@ -97,7 +97,7 @@ SELECT
     ,@UserProfileId AS "ProfileId"
     ,B.Id -- via JOIN w/User Id values on updates
 
---	INTO sfdc.User_L_02
+	INTO sfdc.User_L_02
 FROM sfdc.User_T AS A
 --  INSERT CORRECT JOIN TABLE NAMES FOR ENVIRONMENT AND DATE
 LEFT JOIN sfdc.[Id_User_prod] AS B -- lookup matching User Id

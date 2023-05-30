@@ -123,6 +123,8 @@ WHERE stepsID = '01_01_03_1';
 
 /*
 
+DECLARE
+    @RecordCount AS INT = NULL
 
 
 Insert INTO sfdc.Migration_Status (
@@ -135,8 +137,8 @@ Insert INTO sfdc.Migration_Status (
     ,status 
 ) values (
 	'01_01_03_1'
-	,'User L (Load)'
-	,'Extract Account Primary'
+	,'User L (Export)'
+	,'Export to CSV'
 	,GETDATE()
 	--,''
 	,0
@@ -160,6 +162,8 @@ UPDATE sfdc.Migration_Status
     ,status='COMPLETED' 
 WHERE stepsID = '01_01_03_1';
 
+DECLARE
+    @RecordCount AS INT = NULL
 
 Insert INTO sfdc.Migration_Status (
     stepsID
@@ -196,6 +200,8 @@ UPDATE sfdc.Migration_Status
     ,status='COMPLETED' 
 WHERE stepsID = '01_01_03_1';
 
+DECLARE
+    @RecordCount AS INT = NULL
 Insert INTO sfdc.Migration_Status (
     stepsID
     ,description
@@ -232,6 +238,8 @@ UPDATE sfdc.Migration_Status
     ,status='COMPLETED' 
 WHERE stepsID = '01_01_03_1';
 
+DECLARE
+    @RecordCount AS INT = NULL
 
 Insert INTO sfdc.Migration_Status (
     stepsID
