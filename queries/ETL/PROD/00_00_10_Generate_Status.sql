@@ -3,7 +3,7 @@
 --  lAST RUN:   230516 prod
 
 USE Salesforce
-
+--delete  from sfdc.Migration_Status
 
 select * FROM sfdc.Migration_Status 
 Order by stepsID

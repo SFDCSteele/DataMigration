@@ -15,15 +15,16 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
-	,'Account_Team_Member E (Extract)'
-	,'Extract Account Primary'
+	'01_01_01'
+	,'User E (Extract)'
+	,'User Base Load'
 	,GETDATE()
 	--,''
 	,0
 	,'STARTED'
 );
 
+	DROP TABLE sfdc.User_E
 SELECT 
 	TimezoneCode AS "TimeZoneSidKey" -- No translation needed, same format as SF; replace nulls in User_T
 	,Username AS "PACE_RESOURCE_Username__c" -- DS230120 - also use this for Alias value
@@ -53,17 +54,16 @@ SELECT
     ,TRIM(ResourceEmail) AS "FederationIdentifier"
     ,FirstName + ' ' + LastName AS CommunityNickname -- DS230120 - use First and Last names
 
---	INTO sfdc.User_E
---	DROP TABLE sfdc.User_E
+	INTO sfdc.User_E
 FROM osc.RESOURCE_SEED -- BASE LOAD UPSERT
-FROM oscd.RESOURCE_SEED -- DELTA LOAD UPSERT
+--FROM oscd.RESOURCE_SEED -- DELTA LOAD UPSERT
 
 
 
 --  SET PER Record Count
 SET @RecordCount = 
 	(SELECT count(*)
-    FROM sfdc.Account_Team_Member_Location_Primary_E)
+    FROM sfdc.User_E)
 
 UPDATE sfdc.Migration_Status 
 	SET 
@@ -74,4 +74,4 @@ UPDATE sfdc.Migration_Status
     endDateTime = GETDATE()
     ,recordCount=@RecordCount
     ,status='COMPLETED' 
-WHERE stepsID = '04_01_01_3';
+WHERE stepsID = '01_01_01';

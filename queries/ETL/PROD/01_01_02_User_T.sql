@@ -21,15 +21,16 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
-	,'Account_Team_Member E (Extract)'
-	,'Extract Account Primary'
+	'01_01_02'
+	,'User T (Transform)'
+	,'Transform'
 	,GETDATE()
 	--,''
 	,0
 	,'STARTED'
 );
 
+  DROP TABLE sfdc.User_T
 
 SELECT
     Username
@@ -90,15 +91,14 @@ SELECT
     ,PACE_RESOURCE_Username__c
     ,CommunityNickname
 
---  INTO sfdc.User_T
---  DROP TABLE sfdc.User_T
+  INTO sfdc.User_T
 FROM sfdc.User_E
 
 
 --  SET PER Record Count
 SET @RecordCount = 
 	(SELECT count(*)
-    FROM sfdc.Account_Team_Member_Location_Primary_E)
+    FROM sfdc.User_T)
 
 UPDATE sfdc.Migration_Status 
 	SET 
@@ -109,4 +109,4 @@ UPDATE sfdc.Migration_Status
     endDateTime = GETDATE()
     ,recordCount=@RecordCount
     ,status='COMPLETED' 
-WHERE stepsID = '04_01_01_3';
+WHERE stepsID = '01_01_02';

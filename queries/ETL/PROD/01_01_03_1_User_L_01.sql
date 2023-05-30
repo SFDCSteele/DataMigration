@@ -5,14 +5,17 @@
 
 DECLARE
     @Environment AS VARCHAR(20) = NULL,
-    @UserProfileId AS VARCHAR(20) = NULL
+    @UserProfileId AS VARCHAR(20) = NULL,
+    @RecordCount AS INT = NULL
 
+USE Salesforce;
 -- SET THESE VALUES FOR THE LOAD ENVIRONMENT
 SET @Environment = 'PROD' -- load org name, e.g., 'prod'
-SET @UserProfileId = '00e77000000Lt2RAAS' -- ArcBest Standard User Profile Id for environment
-
-DECLARE 
-    @RecordCount AS INT = NULL
+SET @UserProfileId =  
+	(SELECT Id 
+--  SET CORRECT TABLE NAME BELOW !!
+    FROM sfdc.[Id_Profile_prod]
+    WHERE [NAME] = 'ArcBest Standard')
 
 
 Insert INTO sfdc.Migration_Status (
@@ -33,7 +36,7 @@ Insert INTO sfdc.Migration_Status (
 	,'STARTED'
 );
 
-USE Salesforce;
+	DROP TABLE sfdc.User_L_01
 SELECT
     CASE
         WHEN @Environment = 'PROD' THEN A.Username
@@ -44,8 +47,18 @@ SELECT
     ,LastName
     ,Title
     ,Alias
-	,Email + '.' + @Environment AS Email
-    ,SenderEmail + '.' + @Environment AS SenderEmail
+    ,CASE
+        WHEN @Environment = 'PROD' THEN A.Email
+        ELSE A.Email +  '.' + @Environment 
+        END
+        AS Email -- ADD ORG NAME AS SUFFIX !!!!
+	--,Email + '.' + @Environment AS Email
+    ,CASE
+        WHEN @Environment = 'PROD' THEN A.SenderEmail
+        ELSE A.SenderEmail +  '.' + @Environment 
+        END
+        AS SenderEmail -- ADD ORG NAME AS SUFFIX !!!!
+    --,SenderEmail + '.' + @Environment AS SenderEmail
     ,StartDate__c
 	,EndDate__c
     ,'false' AS IsActive -- comment out to load actual; managing license limit
@@ -62,10 +75,20 @@ SELECT
     ,ResourceOrgRoleName__c
     ,ResourceOrganizationName__c
     ,TimeZoneSidKey
-    ,FederationIdentifier + '.' + @Environment AS FederationIdentifier
+    ,CASE
+        WHEN @Environment = 'PROD' THEN A.FederationIdentifier
+        ELSE A.FederationIdentifier +  '.' + @Environment 
+        END
+        AS FederationIdentifier -- ADD ORG NAME AS SUFFIX !!!!
+    --,FederationIdentifier + '.' + @Environment AS FederationIdentifier
     ,PACE_RESOURCE_ResourcePartyId__c
     ,PACE_RESOURCE_Username__c
-    ,CommunityNickname + '.' + @Environment AS CommunityNickname -- cannot have duplicates
+    ,CASE
+        WHEN @Environment = 'PROD' THEN A.CommunityNickname
+        ELSE A.CommunityNickname +  '.' + @Environment 
+        END
+        AS CommunityNickname -- ADD ORG NAME AS SUFFIX !!!!
+    --,CommunityNickname + '.' + @Environment AS CommunityNickname -- cannot have duplicates
 --  required fields not coming from osc.RESOURCE_SEED
     ,'UTF-8' AS "EmailEncodingKey"
     ,'en_US' AS "LanguageLocaleKey"
@@ -73,8 +96,7 @@ SELECT
     ,@UserProfileId AS "ProfileId"
 --    ,Id -- User_L_02
 
---	INTO sfdc.User_L_01
---	DROP TABLE sfdc.User_L_01
+	INTO sfdc.User_L_01
 FROM sfdc.User_T AS A
 LEFT JOIN sfdc.[Id_UserRole_prod] AS C -- updated 230420-1622 UserProfileId lookup
 ON A.Role__c = C.DeveloperName

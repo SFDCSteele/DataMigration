@@ -14,15 +14,11 @@ DECLARE
 
 -- SET THESE VALUES FOR THE LOAD ENVIRONMENT
 SET @Environment = 'PROD'/*'PROD'*/ /*'prod02'*/ -- load org name, e.g., 'prod'
-SET @UserProfileId = /*'00e77000000Lt2RAAS'*/ -- ArcBest Standard User Profile Id for environment
-SET @AccountAccountRecordTypeId = 
+SET @UserProfileId =  
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_RecordType_prod]
-    WHERE DeveloperName = 'Account' AND IsActive = 'true')
-
-
-DECLARE 
+    FROM sfdc.[Id_Profile_prod]
+    WHERE [NAME] = 'ArcBest Standard')
 
 
 Insert INTO sfdc.Migration_Status (
@@ -34,7 +30,7 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
+	'01_01_03_2'
 	,'User L (Load)'
 	,'User ManagerId'
 	,GETDATE()
@@ -88,7 +84,12 @@ SELECT
         AS FederationIdentifier
     ,PACE_RESOURCE_ResourcePartyId__c
     ,PACE_RESOURCE_Username__c
-    ,CommunityNickname + '.' + @Environment AS CommunityNickname -- cannot have duplicates
+    ,CASE
+        WHEN @Environment = 'PROD' THEN A.CommunityNickname
+        ELSE A.CommunityNickname +  '.' + @Environment 
+        END
+        AS CommunityNickname -- ADD ORG NAME AS SUFFIX !!!!
+    --,CommunityNickname + '.' + @Environment AS CommunityNickname -- cannot have duplicates
 --  required fields not coming from osc.RESOURCE_SEED
     ,'UTF-8' AS "EmailEncodingKey"
     ,'en_US' AS "LanguageLocaleKey"
@@ -125,7 +126,7 @@ UPDATE sfdc.Migration_Status
     endDateTime = GETDATE()
     ,recordCount=@RecordCount
     ,status='COMPLETED' 
-WHERE stepsID = '04_01_01_3';
+WHERE stepsID = '01_01_03_2';
 
 /*
 
@@ -139,7 +140,7 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
+	'01_01_03'
 	,'User (Export)'
 	,'Export'
 	,GETDATE()
@@ -174,7 +175,7 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
+	'01_01_03'
 	,'User (Insert)'
 	,'Data Loader Insert'
 	,GETDATE()
@@ -210,7 +211,7 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
+	'01_01_03'
 	,'User (Export)'
 	,'Data Loader Export Keys'
 	,GETDATE()
@@ -245,7 +246,7 @@ Insert INTO sfdc.Migration_Status (
     ,recordCount
     ,status 
 ) values (
-	'04_01_01_1'
+	'01_01_03'
 	,'User (Import)'
 	,'MS SQL Import Keys'
 	,GETDATE()
