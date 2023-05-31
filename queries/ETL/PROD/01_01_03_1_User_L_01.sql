@@ -36,17 +36,18 @@ Insert INTO sfdc.Migration_Status (
 	,'STARTED'
 );
 
-	DROP TABLE sfdc.User_L_01
+	--DROP TABLE sfdc.User_L_01
 SELECT
     CASE
-        WHEN @Environment = 'PROD' THEN A.Username
+        WHEN @Environment = 'PROD' THEN A.Username +  '.arcbtech' 
         ELSE A.Username +  '.' + @Environment 
         END
         AS Username -- ADD ORG NAME AS SUFFIX !!!!
-    ,FirstName
-    ,LastName
-    ,Title
-    ,Alias
+    ,F.Id
+    ,A.FirstName
+    ,A.LastName
+    ,A.Title
+    ,A.Alias
     ,CASE
         WHEN @Environment = 'PROD' THEN A.Email
         ELSE A.Email +  '.' + @Environment 
@@ -59,30 +60,30 @@ SELECT
         END
         AS SenderEmail -- ADD ORG NAME AS SUFFIX !!!!
     --,SenderEmail + '.' + @Environment AS SenderEmail
-    ,StartDate__c
-	,EndDate__c
+    ,A.StartDate__c
+	,A.EndDate__c
     ,'false' AS IsActive -- comment out to load actual; managing license limit
-    ,CorpEmplID__c
+    ,A.CorpEmplID__c
 --    ,MgrCorpEmplID__c AS "ManagerId" -- type Hierarchy lookup via MgrCorpEmplID__c in L_04
-    ,MgrCorpEmplID__c
-    ,Area__c -- picklist
-    ,Region__c
-    ,District__c
-    ,Territory__c
+    ,A.MgrCorpEmplID__c
+    ,A.Area__c -- picklist
+    ,A.Region__c
+    ,A.District__c
+    ,A.Territory__c
     ,C.Id AS UserRoleId -- lookup value in User_L_01
-    ,Role__c
-    ,SRMRole__c -- added per DS 230414
-    ,ResourceOrgRoleName__c
-    ,ResourceOrganizationName__c
-    ,TimeZoneSidKey
+    ,A.Role__c
+    ,A.SRMRole__c -- added per DS 230414
+    ,A.ResourceOrgRoleName__c
+    ,A.ResourceOrganizationName__c
+    ,A.TimeZoneSidKey
     ,CASE
         WHEN @Environment = 'PROD' THEN A.FederationIdentifier
         ELSE A.FederationIdentifier +  '.' + @Environment 
         END
         AS FederationIdentifier -- ADD ORG NAME AS SUFFIX !!!!
     --,FederationIdentifier + '.' + @Environment AS FederationIdentifier
-    ,PACE_RESOURCE_ResourcePartyId__c
-    ,PACE_RESOURCE_Username__c
+    ,A.PACE_RESOURCE_ResourcePartyId__c
+    ,A.PACE_RESOURCE_Username__c
     ,CASE
         WHEN @Environment = 'PROD' THEN A.CommunityNickname
         ELSE A.CommunityNickname +  '.' + @Environment 
@@ -96,14 +97,17 @@ SELECT
     ,@UserProfileId AS "ProfileId"
 --    ,Id -- User_L_02
 
-	INTO sfdc.User_L_01
+	--INTO sfdc.User_L_01
 FROM sfdc.User_T AS A
 LEFT JOIN sfdc.[Id_UserRole_prod] AS C -- updated 230420-1622 UserProfileId lookup
 ON A.Role__c = C.DeveloperName
 
---  Filter out ARCB System Users, which are configured by Func & DevOps teams
-WHERE SUBSTRING(Username,1,12) <> 'ArcBest-Corp' -- OR SUBSTRING(Username,1,13) = 'salessupport@'
+LEFT JOIN sfdc.[Id_User_prod] AS F
+ON A.[CORPEMPLID__C] = F.[CORPEMPLID__C]
 
+--  Filter out ARCB System Users, which are configured by Func & DevOps teams
+WHERE SUBSTRING(A.Username,1,12) <> 'arcBest-corp' -- OR SUBSTRING(Username,1,13) = 'salessupport@'
+AND F.Id is null and A.Username LIKE '%shipmolo%'
 
 --  SET PER Record Count
 SET @RecordCount = 

@@ -83,8 +83,8 @@ SELECT --top 1000--TOP 0.1 PERCENT
     ,LEFT(PersonDEO_OmegaAcceptedDate_c,19) AS "OmegaAcceptedDate__c" -- reformat for SF 2015-12-27 00:00:00.0000000 to 2015-12-27 00:00:00
 
  INTO sfdc.Contact_E
---FROM osc.CONTACT_SEED -- base load tables
-FROM oscd.CONTACT_SEED -- delta load tables
+FROM osc.CONTACT_SEED -- base load tables
+--FROM oscd.CONTACT_SEED -- delta load tables
 --where Address1 IS NULL
 
 DECLARE 

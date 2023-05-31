@@ -63,7 +63,8 @@ group by A.ContactIntegrationId__c, E.Id
 SELECT  -- TOP 0.1 PERCENT 
 	A.ContactIntegrationId__c 
 	, A.ContactAddrIntegrationId__c
-	, F.Id
+	,'NULL' as Id
+	--, F.Id
 	--, A.AccountId
 	, E.AccountId 
 	--, E.RecordTypeId
@@ -115,7 +116,7 @@ SELECT  -- TOP 0.1 PERCENT
 	, A.Affinity__c 
 	, A.BuyingRole__c 
 	, A.OmegaStatus__c 
-	, A.PantherInfluenceLevel__c 
+	, A.InfluenceLevel__c 
 	, A.PreferredName__c 
 	, A.OwnerCorpEmplId 
 	, A.Source__c 
@@ -147,10 +148,10 @@ ON TRIM(A.LastModifiedById) = TRIM(D.Alias) and D.CorpEmplID__c IS NOT NULL
 LEFT JOIN sfdc.[Contact_L_01_A] AS E-- for Account__c
 ON TRIM(A.ContactIntegrationId__c) = TRIM(E.[ContactIntegrationId__c]) 
 
-LEFT JOIN sfdc.[Id_Contact_prod] AS F-- for Contact record Id values
-ON TRIM(A.ContactIntegrationId__c) = TRIM(F.[ContactIntegrationId__c]) 
+--LEFT JOIN sfdc.[Id_Contact_prod] AS F-- for Contact record Id values
+--ON TRIM(A.ContactIntegrationId__c) = TRIM(F.[ContactIntegrationId__c]) 
 
-where F.Id is NULL
+--where F.Id is NULL
 order by E.AccountId
 
 

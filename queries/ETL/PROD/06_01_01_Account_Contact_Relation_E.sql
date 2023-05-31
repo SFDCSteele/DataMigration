@@ -33,8 +33,8 @@ SELECT --TOP 0.1 PERCENT
     , Role AS 'Role__c' 
     
  INTO sfdc.Account_Contact_Relation_E
---FROM osc.CONTACT_RELATIONSHIP_SEED;  -- base load tables
-FROM oscd.CONTACT_RELATIONSHIP_SEED; -- delta load tables
+FROM osc.CONTACT_RELATIONSHIP_SEED;  -- base load tables
+--FROM oscd.CONTACT_RELATIONSHIP_SEED; -- delta load tables
 
 
 DECLARE 
