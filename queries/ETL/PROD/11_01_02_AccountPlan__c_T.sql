@@ -19,6 +19,7 @@ Insert INTO sfdc.Migration_Status (
 	,0
 	,'STARTED'
 );
+  DROP TABLE sfdc.AccountPlan__c_T
 
 SELECT
     Id -- lookup in AccountPlan__c_L_02.sql
@@ -108,8 +109,7 @@ SELECT
                             ,'TECHNOLOGY', 'Technology')
     AS "ValuesFCL__c" -- picklist
 
---  INTO sfdc.AccountPlan__c_T
---  DROP TABLE sfdc.AccountPlan__c_T
+  INTO sfdc.AccountPlan__c_T
 
 FROM sfdc.AccountPlan__c_E
 ORDER BY PACE_BusinessPlanId__c

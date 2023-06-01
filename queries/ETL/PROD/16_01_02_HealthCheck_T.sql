@@ -2,7 +2,27 @@
 --	LAST RUN:  230518
 
 USE Salesforce
+
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'16_01_02'
+	,'Health Check T (Transform)'
+	,'Transform'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
   DROP TABLE sfdc.HealthCheck_T
+
 SELECT  -- TOP 0.1 PERCENT 
 --  Id -- lookup in L_02
 	PACEActivityId__c
@@ -59,3 +79,22 @@ SELECT  -- TOP 0.1 PERCENT
 
   INTO sfdc.HealthCheck_T
 FROM sfdc.HealthCheck_E;
+
+DECLARE 
+    @RecordCount AS INT = NULL
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.HealthCheck_T)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '16_01_02';

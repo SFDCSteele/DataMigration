@@ -37,7 +37,7 @@ SET @AccountAccountRecordTypeId =
     FROM sfdc.[Id_RecordType_prod]
     WHERE DeveloperName = 'Account' AND IsActive = 'true')
 
-	--DROP TABLE sfdc.Task_L_01
+	DROP TABLE sfdc.Task_L_01
 
 SELECT --TOP 0.3 PERCENT
 	A.PACE_ActivityId__c
@@ -88,7 +88,7 @@ SELECT --TOP 0.3 PERCENT
 	, A.ChurnQuestion2__c 
 	, A.ChurnQuestion4__c
 
-  --INTO sfdc.Task_L_01
+  INTO sfdc.Task_L_01
 FROM sfdc.Task_T AS A
 
 LEFT JOIN sfdc.[Id_User_prod] AS B -- for CreatedById
@@ -114,11 +114,13 @@ ON A.PACE_OpportunityID__c = F.PACE_OpportunityID__c
 LEFT JOIN sfdc.[Id_Account_prod] AS G-- for Account__c
 ON TRIM(A.AIMSAccount__c) = TRIM(G.AIMSAccount__c) AND G.RecordTypeId = @RecordTypeId
 
+/*
 LEFT JOIN sfdc.[Id_Task_prod] AS X-- for activity record Id values
 ON TRIM(A.A.PACE_ActivityId__c) = TRIM(X.[ActivityId]) 
 
 WHERE E1.ActivityId IS NOT NULL
 	X.Id is null
+*/
 order by A.AIMSAccount__c,A.PACE_OpportunityID__c
 --order by A.PACE_ActivityId__c
 

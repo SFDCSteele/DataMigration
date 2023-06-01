@@ -2,6 +2,25 @@
 --  LAST RUN:   230518 prod
 
 USE Salesforce;
+
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'16_01_01'
+	,'Health Check E (Extract)'
+	,'Extract'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
   DROP TABLE sfdc.HealthCheck_E
 SELECT
 --  Id -- lookup in L_02
@@ -26,3 +45,23 @@ SELECT
 --  FROM osc.ACTIVITY_SEED 
     FROM oscd.ACTIVITY_SEED 
     Where ActivityFunctionCode = 'TASK' AND StatusCode <> 'CANCELED' AND InternalType_c = 'CUSTOMER_CHURN'
+
+
+DECLARE 
+    @RecordCount AS INT = NULL
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.HealthCheck_E)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '16_01_01';

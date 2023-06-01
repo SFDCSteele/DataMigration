@@ -55,8 +55,8 @@ SELECT --TOP 100
     , ChurnQuestion4_c AS 'ChurnQuestion4__c' 
 
  INTO sfdc.Event_E
---FROM osc.ACTIVITY_SEED 
-FROM oscd.ACTIVITY_SEED 
+FROM osc.ACTIVITY_SEED 
+--FROM oscd.ACTIVITY_SEED 
     Where ActivityFunctionCode = 'APPOINTMENT' AND StatusCode <> 'CANCELED'
 
 

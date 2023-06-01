@@ -1,6 +1,25 @@
 -- HealthCheck_L_01.sql HealthCheck target object view transformation query to table Account_Account_T
 --	LAST RUN:	230518
 USE Salesforce
+
+Insert INTO sfdc.Migration_Status (
+    stepsID
+    ,description
+    ,action
+    ,startDateTime
+    --,endDateTime
+    ,recordCount
+    ,status 
+) values (
+	'16_01_03'
+	,'Health Check L (Load)'
+	,'Load'
+	,GETDATE()
+	--,''
+	,0
+	,'STARTED'
+);
+
 DECLARE 
     @ABTSupportId AS VARCHAR(18) = NULL,
     @RecordTypeId AS VARCHAR(20) = NULL
@@ -64,3 +83,23 @@ ON TRIM(A.CreatedById) = TRIM(D.Alias)  AND D.CorpEmplId__c IS NOT NULL
 
 LEFT JOIN sfdc.[Id_User_prod] AS E -- for LastModifiedById
 ON TRIM(A.LastModifiedById) = TRIM(E.Alias) AND E.CorpEmplId__c IS NOT NULL
+
+
+DECLARE 
+    @RecordCount AS INT = NULL
+
+--  SET PER Record Count
+SET @RecordCount = 
+	(SELECT count(*)
+    FROM sfdc.HealthCheck_L_01)
+
+UPDATE sfdc.Migration_Status 
+	SET 
+    --stepsID
+    --,description
+    --,action
+    --,startDateTime
+    endDateTime = GETDATE()
+    ,recordCount=@RecordCount
+    ,status='COMPLETED' 
+WHERE stepsID = '16_01_03';

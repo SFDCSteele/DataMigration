@@ -53,8 +53,8 @@ SELECT ---TOP 1000--TOP 0.1 PERCENT
     , ChurnQuestion4_c AS 'ChurnQuestion4__c'
 
  INTO sfdc.Task_E
---FROM osc.ACTIVITY_SEED 
-FROM oscd.ACTIVITY_SEED 
+FROM osc.ACTIVITY_SEED 
+--FROM oscd.ACTIVITY_SEED 
     Where ActivityFunctionCode = 'TASK' AND StatusCode <> 'CANCELED' AND InternalType_c != 'CUSTOMER_CHURN'
 
 

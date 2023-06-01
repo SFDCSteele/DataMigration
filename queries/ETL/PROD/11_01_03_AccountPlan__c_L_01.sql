@@ -42,6 +42,8 @@ SET @AccountAccountRecordTypeId =
     FROM sfdc.[Id_RecordType_prod]
     WHERE DeveloperName = 'Account' AND IsActive = 'true')
 
+  DROP TABLE sfdc.AccountPlan__c_L_01
+
 SELECT
 --    Id -- lookup in AccountPlan__c_L_02.sql
     PACE_BusinessPlanId__c
@@ -81,8 +83,7 @@ SELECT
     ,Value__c  
     ,ValuesFCL__c
 
---  INTO sfdc.AccountPlan__c_L_01
---  DROP TABLE sfdc.AccountPlan__c_L_01
+  INTO sfdc.AccountPlan__c_L_01
 FROM sfdc.AccountPlan__c_T AS A
 LEFT OUTER JOIN sfdc.[Id_Account_prod] AS B
 ON A.AIMSAccount__c = B.AIMSAccount__c AND B.RecordTypeId = @AcctRecordTypeId
@@ -95,10 +96,10 @@ ON A.LastModifiedById = E.Alias AND E.CorpEmplID__c IS NOT NULL
 ORDER BY PACE_BusinessPlanId__c
 
 
-LEFT JOIN sfdc.[Id_AccountPlan__c_prod] AS F-- for Contact record Id values
-ON TRIM(A.PACE_BusinessPlanId__c) = TRIM(F.[BusinessPlanId]) 
+--LEFT JOIN sfdc.[Id_AccountPlan__c_prod] AS F-- for Contact record Id values
+--ON TRIM(A.PACE_BusinessPlanId__c) = TRIM(F.[BusinessPlanId]) 
 
-Where F.Id is null
+--Where F.Id is null
 
 DECLARE 
     @RecordCount AS INT = NULL
