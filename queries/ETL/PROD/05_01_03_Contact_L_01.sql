@@ -148,10 +148,10 @@ ON TRIM(A.LastModifiedById) = TRIM(D.Alias) and D.CorpEmplID__c IS NOT NULL
 LEFT JOIN sfdc.[Contact_L_01_A] AS E-- for Account__c
 ON TRIM(A.ContactIntegrationId__c) = TRIM(E.[ContactIntegrationId__c]) 
 
---LEFT JOIN sfdc.[Id_Contact_prod] AS F-- for Contact record Id values
---ON TRIM(A.ContactIntegrationId__c) = TRIM(F.[ContactIntegrationId__c]) 
+LEFT JOIN sfdc.[Id_Contact_prod] AS F-- for Contact record Id values
+ON TRIM(A.ContactIntegrationId__c) = TRIM(F.[ContactIntegrationId__c]) 
 
---where F.Id is NULL
+where F.Id is NULL
 order by E.AccountId
 
 
