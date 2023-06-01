@@ -48,7 +48,7 @@ Insert INTO sfdc.Migration_Status (
 );
 
 
-  DROP TABLE sfdc.Account_Location_L_01
+--  DROP TABLE sfdc.Account_Location_L_01
 SELECT --TOP 1500
     AddressIntegrationId__c
 	,CASE
@@ -98,7 +98,7 @@ SELECT --TOP 1500
     ,B.OwnerId -- set via AIMSAccount__c
     ,@LocRecordTypeId AS RecordTypeId
 
-  INTO sfdc.Account_Location_L_01
+--  INTO sfdc.Account_Location_L_01
 FROM sfdc.Account_Location_T AS A
 
 LEFT JOIN sfdc.[Id_Account_prod] AS B-- for OwnerId, Account__c -- VERIFY SOURCE FRESHNESS !!!
@@ -112,6 +112,10 @@ ON TRIM(A.LastModifiedById) = TRIM(D.Alias) AND TRIM(D.CorpEmplId__c) IS NOT NUL
 
 LEFT JOIN sfdc.[Id_User_prod] AS E -- for StatusUpdateUserid__c -- VERIFY SOURCE FRESHNESS !!!
 ON TRIM(A.StatusUpdateUserid__c) = TRIM(E.Alias) AND TRIM(E.CorpEmplId__c) IS NOT NULL
+
+LEFT JOIN sfdc.[Id_Account_prod] AS F -- for Account-Location record Id values
+ON A.AIMSAccountLocation__c = F.AIMSAccountLocation__c AND F.RecordTypeId = @LocRecordTypeId
+WHERE F.Id IS NULL -- select rows for Insert
 
 ORDER BY A.AIMSAccountLocation__c
 

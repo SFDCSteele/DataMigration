@@ -3,6 +3,7 @@ USE Salesforce
 
 DECLARE 
     @ABTSupportId AS VARCHAR(18) = NULL,
+    @PAONotInSalesforceId AS VARCHAR(18) = NULL,
     @AcctRecordTypeId AS VARCHAR(18) = NULL,
     @RecordCount AS INT = NULL
 
@@ -12,6 +13,12 @@ SET @ABTSupportId =
 --  SET CORRECT TABLE NAME BELOW !!
     FROM sfdc.[Id_User_prod]
     WHERE Alias = 'ABTSuppt')
+--	Obtain User.Id value for User.Alias = 'Corp30'
+SET @PAONotInSalesforceId = 
+	(SELECT Id 
+--  SET CORRECT TABLE NAME BELOW !!
+    FROM sfdc.[Id_User_prod]
+    WHERE Alias = 'Corp30')
 
 --  MANUAL VALUE ENTRIES PER ENVIRONMENT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 --  org-specific RecordTypeId values:    
@@ -63,7 +70,7 @@ DROP TABLE sfdc.Account_Team_Member_Primary_L_01_1
 
 SELECT --TOP 0.3 PERCENT
 	CASE
-		WHEN B.Id IS NULL OR B.Id = 'ABTSupport' THEN @ABTSupportId
+		WHEN B.Id IS NULL OR B.Id = 'ABTSupport' THEN @PAONotInSalesforceId
 		ELSE B.Id
 		END
 		AS 'UserId'

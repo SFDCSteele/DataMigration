@@ -3,6 +3,7 @@ USE Salesforce
 
 DECLARE 
     @ABTSupportId AS VARCHAR(18) = NULL,
+    @PAONotInSalesforceId AS VARCHAR(18) = NULL,
     @AcctRecordTypeId AS VARCHAR(18) = NULL,
     @RecordCount AS INT = NULL
 
@@ -12,6 +13,11 @@ SET @ABTSupportId =
 --  SET CORRECT TABLE NAME BELOW !!
     FROM sfdc.[Id_User_prod]
     WHERE Alias = 'ABTSuppt')
+SET @PAONotInSalesforceId = 
+	(SELECT Id 
+--  SET CORRECT TABLE NAME BELOW !!
+    FROM sfdc.[Id_User_prod]
+    WHERE Alias = 'Corp30')
 
 --  MANUAL VALUE ENTRIES PER ENVIRONMENT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 --  org-specific RecordTypeId values:    
@@ -62,7 +68,7 @@ Insert INTO sfdc.Migration_Status (
 DROP TABLE sfdc.Account_Team_Member_Location_Primary_L_02_1
 SELECT --TOP 0.3 PERCENT
 	CASE
-		WHEN B.Id IS NULL OR B.Id = 'ABTSupport' THEN @ABTSupportId
+		WHEN B.Id IS NULL OR B.Id = 'ABTSupport' THEN @PAONotInSalesforceId
 		ELSE B.Id
 		END
 		AS 'UserId'

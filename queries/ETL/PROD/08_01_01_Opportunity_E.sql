@@ -78,8 +78,8 @@ SELECT --TOP .1 PERCENT
     ,ProposalId_c AS "ProposalId__c"
 
   INTO sfdc.Opportunity_E
---FROM osc.OPPORTUNITY_SEED
-FROM oscd.OPPORTUNITY_SEED
+FROM osc.OPPORTUNITY_SEED
+--FROM oscd.OPPORTUNITY_SEED
 ORDER BY AIMS_ACCT, OptyId, RevnId
 
 

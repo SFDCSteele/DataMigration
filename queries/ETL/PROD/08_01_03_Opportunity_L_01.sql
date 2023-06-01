@@ -69,7 +69,7 @@ SET @OptyRetainRecordTypeId =
 
 SELECT --TOP 10000
     A.[Name]
-    ,F.Id -- lookup in Opportunity_L_03
+    --,F.Id -- lookup in Opportunity_L_03
 --    ,ContactId-- lookup from OpportunityTeamMember in Opportunity_L_02 ### DEPRECATED?????
     ,A.PACE_OpportunityID__c
     ,A.PACE_OpportunityRevenueId__c
@@ -154,12 +154,14 @@ ON A.CreatedById = D.Alias AND D.CorpEmplID__c IS NOT NULL
 LEFT JOIN sfdc.[Id_User_prod] AS E -- for LastModifiedById
 ON A.LastModifiedById = E.Alias AND E.CorpEmplID__c IS NOT NULL
 
+/*
 LEFT JOIN sfdc.[Id_Opportunity_prod] AS F -- for Opportunity.Id in Opportunity_L_03
 ON A.PACE_OpportunityID__c = F.PACE_OpportunityID__c 
     AND A.PACE_OpportunityRevenueId__c = F.PACE_OpportunityRevenueId__c
 
 
 WHERE F.Id is null
+*/
 /*
 -- for L_03:
 LEFT JOIN sfdc.[Id_Opportunity_prod] AS F -- for Opportunity.Id in Opportunity_L_03

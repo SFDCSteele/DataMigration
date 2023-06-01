@@ -35,8 +35,8 @@ SELECT --TOP 1000 --0.1 PERCENT
 
 
  INTO sfdc.Account_Team_Member_Primary_E
---FROM osc.ACCOUNT_SEED 
-FROM oscd.ACCOUNT_SEED 
+FROM osc.ACCOUNT_SEED 
+--FROM oscd.ACCOUNT_SEED 
 	--CROSS APPLY STRING_SPLIT(OrganizationDEO_ABFFreightLocal_c,';');
 
 --  SET PER Record Count
@@ -84,8 +84,8 @@ SELECT --TOP 1000 --0.1 PERCENT
 
 
  INTO sfdc.Account_Team_Member_Secondary_E
---FROM osc.ACCOUNT_SEED 
-FROM oscd.ACCOUNT_SEED 
+FROM osc.ACCOUNT_SEED 
+--FROM oscd.ACCOUNT_SEED 
 	CROSS APPLY STRING_SPLIT(OrganizationDEO_ABFFreightLocal_c,';')
 WHERE OrganizationDEO_ABFFreightLocal_c != ''
 --AND OrganizationDEO_ABFFreightLocal_c like '%DX1-07%'
@@ -140,11 +140,11 @@ SELECT --TOP 1000 --0.1 PERCENT
 
 
  INTO sfdc.Account_Team_Member_Location_Primary_E
---FROM osc.account_location_seed AS A
-FROM oscd.account_location_seed AS A
+FROM osc.account_location_seed AS A
+--FROM oscd.account_location_seed AS A
 
---Left JOIN osc.account_seed AS B 
-Left JOIN oscd.account_seed AS B 
+Left JOIN osc.account_seed AS B 
+--Left JOIN oscd.account_seed AS B 
 on A.AIMS_ACCT = B.AIMS_ACCT
 
 --LEFT JOIN sfdc.ACCOUNT_ACCOUNT_T AS B
@@ -201,11 +201,11 @@ SELECT --TOP 1000 --0.1 PERCENT
 
 
  INTO sfdc.Account_Team_Member_Location_Secondary_E
---FROM osc.account_location_seed AS A
-FROM oscd.account_location_seed AS A
+FROM osc.account_location_seed AS A
+--FROM oscd.account_location_seed AS A
 
---Left JOIN osc.account_seed AS B 
-Left JOIN oscd.account_seed AS B 
+Left JOIN osc.account_seed AS B 
+--Left JOIN oscd.account_seed AS B 
 on A.AIMS_ACCT = B.AIMS_ACCT
 
 --LEFT JOIN sfdc.ACCOUNT_ACCOUNT_T AS B
