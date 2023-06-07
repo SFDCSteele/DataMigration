@@ -1,2 +1,0 @@
-Select AccountId, Id, PrimaryAccountOwner__c, TerritoryNumber__c, UserId 
-FROM AccountTeamMember 

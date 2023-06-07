@@ -1,4 +1,0 @@
-SELECT
-Id, PACEActivityId__c, Account__c, AIMSAccount__c, OwnerId,
-	OwnerCorpEmplId__c ,Status__c
-FROM HealthCheck__c

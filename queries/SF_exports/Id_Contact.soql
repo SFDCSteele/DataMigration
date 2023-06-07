@@ -1,5 +1,0 @@
-Select 
-    Id, 
-    PACE_CONTACT_PartyId__c, ContactIntegrationID__c, 
-    AccountId, Account__c, OwnerId 
-FROM Contact 

@@ -1,6 +1,0 @@
-SELECT Id, AIMSAccountLocation__c, PrimaryLocation__c, AIMSAccount__c, OwnerId, OwnerCorpEmplId__c, ParentId, 
-    PAR_AIMS_ACCT__c, PrimaryContactId__c, PACEPrimaryContactPartyId__c, RecordTypeId, PrimaryAccountOwner__c, AccountOwners__c
-FROM Account
-
-
--- 230503 consider adding fields:  PrimaryAccountOwner__c, AccountOwners__c for AccountTeamMember legacy key

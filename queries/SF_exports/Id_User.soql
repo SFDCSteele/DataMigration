@@ -1,3 +1,0 @@
-SELECT Id, CorpEmplID__c, Username, IsActive, Alias, FirstName, LastName, Title,ManagerId, MgrCorpEmplID__c, 
-    District__c, Territory__c, UserRoleId, Role__c, ProfileId
-FROM User

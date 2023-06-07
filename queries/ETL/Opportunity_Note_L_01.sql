@@ -8,7 +8,7 @@ DECLARE
 SET @ABTSupportId = 
 	(SELECT Id 
 --  SET CORRECT TABLE NAME BELOW !!
-    FROM sfdc.[Id_User_fullData_230516-1405]
+    FROM sfdc.[Id_User_prod]
     WHERE Alias = 'ABTSuppt')
 
 --this select and table will create a unique record for each opty/note
@@ -43,13 +43,13 @@ SELECT --TOP 0.3 PERCENT
   INTO sfdc.[Opportunity_Note_L_01_A]
 FROM sfdc.Opportunity_Note_T AS A
 
-LEFT JOIN sfdc.[Id_User_fullData_230516-1405] AS B -- for CreatedById
+LEFT JOIN sfdc.[Id_User_prod] AS B -- for CreatedById
 ON TRIM(A.CreatedById) = TRIM(B.Alias)  and B.CorpEmplID__c IS NOT NULL
 
-LEFT JOIN sfdc.[Id_User_fullData_230516-1405] AS C -- for LastModifiedById
+LEFT JOIN sfdc.[Id_User_prod] AS C -- for LastModifiedById
 ON TRIM(A.LastModifiedById) = TRIM(C.Alias)  and B.CorpEmplID__c IS NOT NULL
 
-LEFT JOIN [sfdc].[Id_Opportunity_fullData_230518-1111] AS F
+LEFT JOIN [sfdc].[Id_Opportunity_prod] AS F
 ON A.PACE_OpportunityID__c = F.PACE_OpportunityID__c --AND F.PrimaryIndicator = 1
 
 Where F.Id IS NOT NULL 
