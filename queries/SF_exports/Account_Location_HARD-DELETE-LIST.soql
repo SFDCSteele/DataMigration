@@ -1,0 +1,3 @@
+select Id, RecordTypeId, AIMSAccountLocation__c, AccountIntegrationId__c, AddressIntegrationId__c
+from account
+where RecordTypeId = '0128F000000koHkQAI'

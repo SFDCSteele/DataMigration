@@ -1,0 +1,7 @@
+select 
+    Id,
+    AccountId, AIMSAccount__c, 
+    ContactId, ContactIntegrationId__c, 
+    IsActive, IsDirect, IsDirect__c, 
+    RelationshipDirection__c
+from AccountContactRelation

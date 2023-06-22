@@ -1,0 +1,3 @@
+SELECT Id, Name, RecordTypeId, Account__c, AIMSAccount__c, AIMSAccountLocation__c,OwnerId FROM Account 
+where RecordTypeId='012770000004LOwAAM'
+order by AIMSAccountLocation__c

@@ -1,0 +1,10 @@
+SELECT 
+    Name, Id, RecordTypeId, 
+    PACE_OpportunityID__c, 
+    PACE_OpportunityRevenueId__c,
+    AccountId, AIMSAccount__c, 
+    Primary_Contact__c ,
+    ContactId, OwnerCorpEmplId__c, 
+    StageName, StatusCode__c
+FROM Opportunity
+WHERE PACE_OpportunityID__c <> null

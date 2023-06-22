@@ -1,0 +1,4 @@
+Select AccountAccessLevel, AccountId, CaseAccessLevel, ContactAccessLevel, Id, Location_Team_Member__c,
+ Name__c, OpportunityAccessLevel, PrimaryAccountOwner__c,
+ TeamMemberRole, TerritoryNumber__c, Title, UserId 
+FROM AccountTeamMember 

@@ -1,0 +1,4 @@
+Select 
+    AIMSAccount__c, AIMSLocation__c, AIMs_Location__c, AccountId, Id, OwnerId, 
+    PACE_ActivityID__c,PACEActivityID__c, PACEOpportunityID__c, WhatId, WhoId 
+FROM Task 
