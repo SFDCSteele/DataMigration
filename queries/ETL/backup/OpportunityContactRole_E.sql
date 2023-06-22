@@ -2,6 +2,7 @@
 --  LAST RUN:  230523 fulldata
 USE SALESFORCE
 
+  DROP TABLE sfdc.OpportunityContactRole_E
 SELECT
 --    Id -- lookup in OpportunityContactRole_L_02
     A.Id AS "OpportunityId" -- lookup via Opportunity in OpportunityContactRole_L_01
@@ -12,10 +13,9 @@ SELECT
     ,B.PrimaryFlag AS "IsPrimary" -- Checkbox
 --    ,'???' AS Role -- no data in source table
 
---  INTO sfdc.OpportunityContactRole_E
---  DROP TABLE sfdc.OpportunityContactRole_E
-FROM sfdc.[Id_Opportunity_fullData_230518-1111] AS A
-LEFT OUTER JOIN osc.OPPORTUNITY_CONTACT_SEED AS B
+  INTO sfdc.OpportunityContactRole_E
+FROM sfdc.[Id_Opportunity_fullData] AS A
+LEFT OUTER JOIN oscd.OPPORTUNITY_CONTACT_SEED AS B
 ON A.PACE_OpportunityID__c = B.OptyId
 LEFT OUTER JOIN sfdc.[Id_Contact_fullData_230518-0928] AS C
 ON B.ContactIntegrationId = C.ContactIntegrationId__c

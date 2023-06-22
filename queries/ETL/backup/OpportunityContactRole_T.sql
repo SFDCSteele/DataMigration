@@ -2,6 +2,7 @@
 --  LAST RUN:  230523 fulldata
 USE SALESFORCE
 
+  DROP TABLE sfdc.OpportunityContactRole_T
 SELECT --TOP 1 PERCENT
 --    Id -- lookup in OpportunityContactRole_L_02
     OpportunityId -- lookup via Opportunity in OpportunityContactRole_L_01
@@ -17,6 +18,5 @@ SELECT --TOP 1 PERCENT
         AS "IsPrimary" -- Checkbox
 --    ,'???' AS Role -- no data in source table
 
---  INTO sfdc.OpportunityContactRole_T
---  DROP TABLE sfdc.OpportunityContactRole_T
+  INTO sfdc.OpportunityContactRole_T
 FROM sfdc.OpportunityContactRole_E

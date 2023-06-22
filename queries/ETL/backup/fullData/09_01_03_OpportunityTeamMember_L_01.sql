@@ -2,8 +2,7 @@
 --  LAST RUN:   230522 fulldata
 USE SALESFORCE
 
-  DROP TABLE sfdc.OpportunityTeamMember_L_01
-SELECT DISTINCT --TOP 1 PERCENT
+SELECT DISTINCT TOP 1 PERCENT
 --    Id -- lookup in OpportunityTeamMember_L_02
     C.Id AS "OpportunityId" -- lookup via Opportunity in OpportunityTeamMember_L_01
     ,A.PACE_OpportunityID__c
@@ -15,7 +14,8 @@ SELECT DISTINCT --TOP 1 PERCENT
     ,Primary__c
     ,TeamMemberRole -- using existing configured values that correspond to Primary__c; possible future User.Role__c based?
 
-  INTO sfdc.OpportunityTeamMember_L_01
+--  INTO sfdc.OpportunityTeamMember_L_01
+--  DROP TABLE sfdc.OpportunityTeamMember_L_01
 FROM sfdc.OpportunityTeamMember_T AS A
 
 LEFT JOIN sfdc.[Id_User_fullData_230516-1405] AS B -- lookup User.Id as UserId

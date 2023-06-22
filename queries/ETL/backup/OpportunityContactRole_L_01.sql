@@ -3,6 +3,7 @@
 
 USE SALESFORCE
 
+  DROP TABLE sfdc.OpportunityContactRole_L_01
 SELECT
 --    Id -- lookup in OpportunityContactRole_L_02
     OpportunityId -- lookup via Opportunity in OpportunityContactRole_L_01
@@ -13,6 +14,5 @@ SELECT
     ,IsPrimary -- Checkbox
 --    ,'???' AS Role -- no data in source table
 
---  INTO sfdc.OpportunityContactRole_L_01
---  DROP TABLE sfdc.OpportunityContactRole_L_01
+  INTO sfdc.OpportunityContactRole_L_01
 FROM sfdc.OpportunityContactRole_T

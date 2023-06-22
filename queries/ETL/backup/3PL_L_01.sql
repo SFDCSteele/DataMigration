@@ -5,15 +5,15 @@
 USE Salesforce
 
 
-	DROP TABLE sfdc.[3PL_L_01]
 SELECT
 	[Name] 
     ,B.Id AS OwnerId
 --    ,ThirdPartyLogisticsFlag__c
 
- INTO sfdc.[3PL_L_01]
+--  INTO sfdc.[3PL_L_01]
+--	DROP TABLE sfdc.[3PL_L_01]
 FROM sfdc.Account_Account_T AS A
-LEFT OUTER JOIN sfdc.[Id_User_prod] AS B
+LEFT OUTER JOIN sfdc.[Id_User_fullData_230516-1405] AS B
 ON A.OwnerCorpEmplId__c = B.CorpEmplId__c AND B.CorpEmplId__c IS NOT NULL
 
 WHERE ThirdPartyLogisticsFlag__c = 'true'
